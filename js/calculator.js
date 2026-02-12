@@ -4,12 +4,10 @@
  */
 
 const Calculator = (() => {
-    const MINUTI_GIORNO = 1440;
     const PAUSA_STANDARD = 30;
     const ORE_GIORNO_NORMALE = 8 * 60;
     const ORE_VENERDI = 6 * 60;
-    const ORE_MINIME_SETTIMANA_NORMALE = 24 * 60;
-    const ORE_MINIME_SETTIMANA_VENERDI = 22 * 60;
+    const MINUTI_GIORNO = 24 * 60;
 
     function timeToMinutes(timeString) {
         if (!timeString) return null;
@@ -39,6 +37,14 @@ const Calculator = (() => {
         return `${sign}${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
     }
 
+    function minutesToOrario(minutes) {
+        if (minutes === null || minutes === undefined) return '';
+        if (minutes >= MINUTI_GIORNO) {
+            return minutesToTimeShort(minutes - MINUTI_GIORNO) + ' (+1)';
+        }
+        return minutesToTimeShort(minutes);
+    }
+
     function calcolaEccessoPausaPranzo(uscitaPranzo, entrataPranzo, isVenerdi) {
         const uscitaMin = timeToMinutes(uscitaPranzo);
         const entrataMin = timeToMinutes(entrataPranzo);
@@ -61,9 +67,8 @@ const Calculator = (() => {
 
         const eccesso = calcolaEccessoPausaPranzo(uscitaPranzo, entrataPranzo, isVenerdi);
         const oreStandard = isVenerdi ? ORE_VENERDI : ORE_GIORNO_NORMALE;
-        const pausaInclusaSePranzoNonInserito = (uscitaPranzo && entrataPranzo) ? 0 : PAUSA_STANDARD;
 
-        return entrataMin + oreStandard + pausaInclusaSePranzoNonInserito + eccesso;
+        return entrataMin + oreStandard + eccesso;
     }
 
     function calcolaDeltaGiornaliero(uscitaEffettiva, orarioUscitaPrevisto) {
@@ -119,6 +124,7 @@ const Calculator = (() => {
         timeToMinutes,
         minutesToTime,
         minutesToTimeShort,
+        minutesToOrario,
         calcolaEccessoPausaPranzo,
         calcolaOrarioUscitaPrevisto,
         calcolaDeltaGiornaliero,

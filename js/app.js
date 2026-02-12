@@ -23,6 +23,28 @@ const App = (() => {
 
         document.getElementById('giorno3-flag-venerdi').addEventListener('change', () => onCampoModificato(3));
         document.getElementById('reset-btn').addEventListener('click', resetSettimana);
+
+        document.querySelectorAll('.btn-reset-giorno').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const numeroGiorno = parseInt(btn.dataset.giorno);
+                resetGiorno(numeroGiorno);
+            });
+        });
+
+        document.querySelectorAll('.btn-ora-adesso').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = btn.dataset.target;
+                const input = document.getElementById(targetId);
+                if (input) {
+                    const now = new Date();
+                    const hh = String(now.getHours()).padStart(2, '0');
+                    const mm = String(now.getMinutes()).padStart(2, '0');
+                    input.value = `${hh}:${mm}`;
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+        });
     }
 
     function onCampoModificato(numeroGiorno) {
@@ -51,6 +73,15 @@ const App = (() => {
 
         document.getElementById('giorno3-flag-venerdi').checked = datiCorrente.giorno3.isVenerdi || false;
 
+        // Apri il details pranzo se ci sono valori salvati
+        for (let i = 1; i <= 3; i++) {
+            const giorno = `giorno${i}`;
+            const details = document.getElementById(`${giorno}-entrata`).closest('.giorno-body').querySelector('.pranzo-details');
+            if (details && (datiCorrente[giorno].uscitaPranzo || datiCorrente[giorno].entrataPranzo)) {
+                details.open = true;
+            }
+        }
+
         aggiornaCalcoli();
     }
 
@@ -63,9 +94,23 @@ const App = (() => {
         mostraRisultatiGiorno(2, dati2);
         mostraRisultatiGiorno(3, dati3);
 
-        const uscitaMinima = Calculator.calcolaUscitaMinimaGiorno3(datiCorrente.giorno3, dati2.deltaCumulato);
-        document.getElementById('uscita-minima-giorno3').textContent =
-            uscitaMinima !== null ? Calculator.minutesToTimeShort(uscitaMinima) : '--:--';
+        // Per il giorno 3, l'uscita prevista tiene conto dei delta accumulati
+        if (dati3.orarioUscitaPrevisto !== null) {
+            const uscitaPrevistaG3 = dati3.orarioUscitaPrevisto - dati2.deltaCumulato;
+            document.getElementById('giorno3-uscita-previsto').textContent =
+                Calculator.minutesToOrario(uscitaPrevistaG3);
+
+            // L'eccesso/difetto del G3 e' rispetto all'uscita prevista corretta
+            // Matematicamente: uscita_eff - (standard - cumulatoG2) = deltaG3 + cumulatoG2 = cumulatoG3
+            if (dati3.deltaGiornaliero !== null) {
+                document.getElementById('giorno3-delta').textContent =
+                    Calculator.minutesToTime(dati3.deltaCumulato);
+                const elCumulatoG3 = document.getElementById('giorno3-delta-cumulato');
+                if (elCumulatoG3) {
+                    elCumulatoG3.textContent = Calculator.minutesToTime(dati3.deltaCumulato);
+                }
+            }
+        }
 
         const totaleOre = Calculator.calcolaTotaleOreSettimanale(
             datiCorrente.giorno1,
@@ -89,7 +134,7 @@ const App = (() => {
         }
 
         document.getElementById('delta-cumulato-finale').textContent =
-            dati3.deltaCumulato !== null ? Calculator.minutesToTime(dati3.deltaCumulato) : '--:--:--';
+            dati3.deltaGiornaliero !== null ? Calculator.minutesToTime(dati3.deltaCumulato) : '--:--:--';
     }
 
     function mostraRisultatiGiorno(numeroGiorno, dati) {
@@ -100,13 +145,34 @@ const App = (() => {
             eccesso > 0 ? Calculator.minutesToTimeShort(eccesso) : '--:--';
 
         document.getElementById(`${prefisso}-uscita-previsto`).textContent =
-            dati.orarioUscitaPrevisto !== null ? Calculator.minutesToTimeShort(dati.orarioUscitaPrevisto) : '--:--';
+            dati.orarioUscitaPrevisto !== null ? Calculator.minutesToOrario(dati.orarioUscitaPrevisto) : '--:--';
 
         document.getElementById(`${prefisso}-delta`).textContent =
             dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaGiornaliero) : '--:--:--';
 
-        document.getElementById(`${prefisso}-delta-cumulato`).textContent =
-            Calculator.minutesToTime(dati.deltaCumulato);
+        const elCumulato = document.getElementById(`${prefisso}-delta-cumulato`);
+        if (elCumulato) {
+            elCumulato.textContent =
+                dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaCumulato) : '--:--:--';
+        }
+    }
+
+    function resetGiorno(numeroGiorno) {
+        const giorno = `giorno${numeroGiorno}`;
+        datiCorrente[giorno] = {
+            entrata: '',
+            uscitaPranzo: '',
+            entrataPranzo: '',
+            uscitaEffettiva: '',
+            isVenerdi: false
+        };
+
+        // Chiudi il details pranzo
+        const details = document.getElementById(`${giorno}-entrata`).closest('.giorno-body').querySelector('.pranzo-details');
+        if (details) details.open = false;
+
+        Storage.salva(datiCorrente);
+        aggiornaUI();
     }
 
     function resetSettimana() {
