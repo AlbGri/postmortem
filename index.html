@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
+    <meta name="theme-color" content="#2c3e50">
+    <title>Orari Ufficio</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Orari Ufficio</h1>
+            <p class="subtitle">Gestione orari settimanali</p>
+        </header>
+
+        <main>
+            <div class="giorno-card" id="card-giorno1">
+                <div class="giorno-header">
+                    <h2>Giorno 1</h2>
+                </div>
+                <div class="giorno-body">
+                    <div class="form-group">
+                        <label for="giorno1-entrata">Entrata</label>
+                        <input type="time" id="giorno1-entrata" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno1-uscita-pranzo">Uscita Pranzo</label>
+                        <input type="time" id="giorno1-uscita-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno1-entrata-pranzo">Entrata Pranzo</label>
+                        <input type="time" id="giorno1-entrata-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno1-uscita-effettiva">Uscita Effettiva</label>
+                        <input type="time" id="giorno1-uscita-effettiva" class="input-time">
+                    </div>
+                </div>
+                <div class="giorno-risultati">
+                    <div class="risultato-item">
+                        <span class="risultato-label">Eccesso Pausa:</span>
+                        <span class="risultato-valore" id="giorno1-eccesso">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Uscita Prevista:</span>
+                        <span class="risultato-valore" id="giorno1-uscita-previsto">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta:</span>
+                        <span class="risultato-valore" id="giorno1-delta">--:--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta Cumulato:</span>
+                        <span class="risultato-valore" id="giorno1-delta-cumulato">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="giorno-card" id="card-giorno2">
+                <div class="giorno-header">
+                    <h2>Giorno 2</h2>
+                </div>
+                <div class="giorno-body">
+                    <div class="form-group">
+                        <label for="giorno2-entrata">Entrata</label>
+                        <input type="time" id="giorno2-entrata" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno2-uscita-pranzo">Uscita Pranzo</label>
+                        <input type="time" id="giorno2-uscita-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno2-entrata-pranzo">Entrata Pranzo</label>
+                        <input type="time" id="giorno2-entrata-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno2-uscita-effettiva">Uscita Effettiva</label>
+                        <input type="time" id="giorno2-uscita-effettiva" class="input-time">
+                    </div>
+                </div>
+                <div class="giorno-risultati">
+                    <div class="risultato-item">
+                        <span class="risultato-label">Eccesso Pausa:</span>
+                        <span class="risultato-valore" id="giorno2-eccesso">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Uscita Prevista:</span>
+                        <span class="risultato-valore" id="giorno2-uscita-previsto">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta:</span>
+                        <span class="risultato-valore" id="giorno2-delta">--:--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta Cumulato:</span>
+                        <span class="risultato-valore" id="giorno2-delta-cumulato">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="giorno-card" id="card-giorno3">
+                <div class="giorno-header">
+                    <h2>Giorno 3</h2>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="giorno3-flag-venerdi">
+                        <label for="giorno3-flag-venerdi">Venerdi</label>
+                    </div>
+                </div>
+                <div class="giorno-body">
+                    <div class="form-group">
+                        <label for="giorno3-entrata">Entrata</label>
+                        <input type="time" id="giorno3-entrata" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno3-uscita-pranzo">Uscita Pranzo</label>
+                        <input type="time" id="giorno3-uscita-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno3-entrata-pranzo">Entrata Pranzo</label>
+                        <input type="time" id="giorno3-entrata-pranzo" class="input-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="giorno3-uscita-effettiva">Uscita Effettiva</label>
+                        <input type="time" id="giorno3-uscita-effettiva" class="input-time">
+                    </div>
+                </div>
+                <div class="giorno-risultati">
+                    <div class="risultato-item">
+                        <span class="risultato-label">Eccesso Pausa:</span>
+                        <span class="risultato-valore" id="giorno3-eccesso">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Uscita Prevista:</span>
+                        <span class="risultato-valore" id="giorno3-uscita-previsto">--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta:</span>
+                        <span class="risultato-valore" id="giorno3-delta">--:--:--</span>
+                    </div>
+                    <div class="risultato-item">
+                        <span class="risultato-label">Delta Cumulato:</span>
+                        <span class="risultato-valore" id="giorno3-delta-cumulato">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="riepilogo-card">
+                <h2>Riepilogo Settimanale</h2>
+                <div class="riepilogo-body">
+                    <div class="riepilogo-item">
+                        <span class="riepilogo-label">Uscita Minima Giorno 3:</span>
+                        <span class="riepilogo-valore" id="uscita-minima-giorno3">--:--</span>
+                    </div>
+                    <div class="riepilogo-item">
+                        <span class="riepilogo-label">Delta Cumulato Finale:</span>
+                        <span class="riepilogo-valore" id="delta-cumulato-finale">--:--:--</span>
+                    </div>
+                    <div class="riepilogo-item">
+                        <span class="riepilogo-label">Totale Ore Settimanale:</span>
+                        <span class="riepilogo-valore" id="totale-ore">--:--</span>
+                    </div>
+                </div>
+                <div class="riepilogo-actions">
+                    <button id="reset-btn" class="btn-reset">Reset Settimana</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Orari Ufficio - PWA v1.0.0</p>
+        </footer>
+    </div>
+
+    <script src="./js/calculator.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
