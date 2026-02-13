@@ -14,6 +14,12 @@
     --success-color: #27ae60;
     --danger-color: #e74c3c;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --text-muted: #4a4a4a;
+    --text-lighter: #5a5a5a;
+    --surface-color: #f8f9fa;
+    --color-on-primary: #ffffff;
+    --error-color: #c0392b;
+    --focus-outline-color: var(--secondary-color);
 }
 
 body {
@@ -33,6 +39,7 @@ header {
     text-align: center;
     padding: 1.5rem 0;
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 header h1 {
@@ -42,7 +49,7 @@ header h1 {
 }
 
 .subtitle {
-    color: #7f8c8d;
+    color: var(--text-muted);
     font-size: 0.95rem;
 }
 
@@ -62,7 +69,7 @@ main {
 
 .giorno-header {
     background: var(--primary-color);
-    color: white;
+    color: var(--color-on-primary);
     padding: 1rem;
     display: flex;
     justify-content: space-between;
@@ -151,8 +158,8 @@ main {
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #555;
-    background: #f8f9fa;
+    color: var(--text-muted);
+    background: var(--surface-color);
     list-style: none;
     display: flex;
     align-items: center;
@@ -197,7 +204,7 @@ main {
 .form-group label {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #555;
+    color: var(--text-muted);
 }
 
 .input-time {
@@ -205,17 +212,28 @@ main {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
+    background: var(--card-background);
+    color: var(--text-color);
     transition: border-color 0.2s;
 }
 
 .input-time:focus {
-    outline: none;
-    border-color: var(--secondary-color);
+    border-color: var(--focus-outline-color);
+    outline: 2px solid var(--focus-outline-color);
+    outline-offset: 2px;
+}
+
+button:focus-visible,
+.btn-ora-adesso:focus-visible,
+details summary:focus-visible,
+input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--focus-outline-color);
+    outline-offset: 2px;
 }
 
 .giorno-risultati {
     padding: 1rem 1.5rem 1.5rem;
-    background: #f8f9fa;
+    background: var(--surface-color);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -230,7 +248,7 @@ main {
 
 .risultato-label {
     font-size: 0.9rem;
-    color: #555;
+    color: var(--text-muted);
 }
 
 .risultato-valore {
@@ -243,7 +261,7 @@ main {
 
 .riepilogo-card {
     background: var(--secondary-color);
-    color: white;
+    color: var(--color-on-primary);
 }
 
 .riepilogo-card h2 {
@@ -285,9 +303,9 @@ main {
 }
 
 .btn-reset {
-    background: white;
+    background: var(--color-on-primary);
     color: var(--secondary-color);
-    border: 2px solid white;
+    border: 2px solid var(--color-on-primary);
     padding: 0.8rem 2rem;
     font-size: 1rem;
     font-weight: 600;
@@ -298,8 +316,8 @@ main {
 
 .btn-reset:hover {
     background: var(--secondary-color);
-    color: white;
-    border-color: white;
+    color: var(--color-on-primary);
+    border-color: var(--color-on-primary);
 }
 
 .btn-reset:active {
@@ -320,7 +338,7 @@ main {
     align-items: center;
     justify-content: space-between;
     background: var(--primary-color);
-    color: white;
+    color: var(--color-on-primary);
     padding: 0.8rem 1.2rem;
     border-radius: 8px;
     margin-top: 1.5rem;
@@ -329,7 +347,7 @@ main {
 }
 
 .btn-install {
-    background: white;
+    background: var(--color-on-primary);
     color: var(--primary-color);
     border: none;
     padding: 0.5rem 1.2rem;
@@ -346,13 +364,13 @@ main {
 footer {
     text-align: center;
     padding: 2rem 0 1rem;
-    color: #7f8c8d;
+    color: var(--text-muted);
     font-size: 0.85rem;
 }
 
 .footer-support {
     margin-bottom: 0.5rem;
-    color: #95a5a6;
+    color: var(--text-lighter);
 }
 
 .footer-links {
@@ -375,7 +393,78 @@ footer {
 }
 
 .text-error {
-    color: red;
+    color: var(--error-color);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--surface-color);
+    border-color: var(--secondary-color);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.theme-icon.light::before {
+    content: '\2600';
+}
+
+.theme-icon.dark::before {
+    content: '\1F319';
+}
+
+.theme-icon.rotating {
+    animation: rotateIcon 0.6s ease-in-out;
+}
+
+@keyframes rotateIcon {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Preferenze utente per movimento ridotto - WCAG 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 @media (max-width: 600px) {
@@ -390,4 +479,62 @@ footer {
     .container {
         padding: 0.5rem;
     }
+}
+
+/* ==================== DARK THEME ==================== */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --primary-color: #4a7fa5;
+        --secondary-color: #2980b9;
+        --background-color: #1e1e1e;
+        --card-background: #2a2a2a;
+        --text-color: #e0e0e0;
+        --border-color: #404040;
+        --success-color: #66bb6a;
+        --danger-color: #ff6b6b;
+        --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        --text-muted: #b0b0b0;
+        --text-lighter: #999999;
+        --surface-color: #333333;
+        --color-on-primary: #ffffff;
+        --error-color: #ff6b6b;
+        --focus-outline-color: #5dade2;
+    }
+}
+
+:root[data-theme="dark"] {
+    --primary-color: #4a7fa5;
+    --secondary-color: #2980b9;
+    --background-color: #1e1e1e;
+    --card-background: #2a2a2a;
+    --text-color: #e0e0e0;
+    --border-color: #404040;
+    --success-color: #66bb6a;
+    --danger-color: #ff6b6b;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --text-muted: #b0b0b0;
+    --text-lighter: #999999;
+    --surface-color: #333333;
+    --color-on-primary: #ffffff;
+    --error-color: #ff6b6b;
+    --focus-outline-color: #5dade2;
+}
+
+:root[data-theme="light"] {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #ecf0f1;
+    --card-background: #ffffff;
+    --text-color: #2c3e50;
+    --border-color: #bdc3c7;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --text-muted: #4a4a4a;
+    --text-lighter: #5a5a5a;
+    --surface-color: #f8f9fa;
+    --color-on-primary: #ffffff;
+    --error-color: #c0392b;
+    --focus-outline-color: var(--secondary-color);
 }

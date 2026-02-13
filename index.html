@@ -42,13 +42,17 @@
         <header>
             <h1>Orari Ufficio</h1>
             <p class="subtitle">Gestione orari settimanali</p>
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambia tema" title="Cambia tema">
+                <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
+                <span class="sr-only">Cambia tema</span>
+            </button>
         </header>
 
         <main>
             <div class="giorno-card" id="card-giorno1">
                 <div class="giorno-header">
                     <h2>Giorno 1</h2>
-                    <button class="btn-reset-giorno" data-giorno="1" title="Reset giorno">&#x2715;</button>
+                    <button class="btn-reset-giorno" data-giorno="1" title="Reset giorno" aria-label="Reset giorno 1">&#x2715;</button>
                 </div>
                 <div class="giorno-body">
                     <div class="form-group">
@@ -73,7 +77,7 @@
                         <input type="time" id="giorno1-uscita-effettiva" class="input-time">
                     </div>
                 </div>
-                <div class="giorno-risultati">
+                <div class="giorno-risultati" aria-live="polite">
                     <div class="risultato-item">
                         <span class="risultato-label">Eccesso Pausa</span>
                         <span class="risultato-valore" id="giorno1-eccesso">--:--</span>
@@ -92,7 +96,7 @@
             <div class="giorno-card" id="card-giorno2">
                 <div class="giorno-header">
                     <h2>Giorno 2</h2>
-                    <button class="btn-reset-giorno" data-giorno="2" title="Reset giorno">&#x2715;</button>
+                    <button class="btn-reset-giorno" data-giorno="2" title="Reset giorno" aria-label="Reset giorno 2">&#x2715;</button>
                 </div>
                 <div class="giorno-body">
                     <div class="form-group">
@@ -117,7 +121,7 @@
                         <input type="time" id="giorno2-uscita-effettiva" class="input-time">
                     </div>
                 </div>
-                <div class="giorno-risultati">
+                <div class="giorno-risultati" aria-live="polite">
                     <div class="risultato-item">
                         <span class="risultato-label">Eccesso Pausa</span>
                         <span class="risultato-valore" id="giorno2-eccesso">--:--</span>
@@ -149,7 +153,7 @@
                             <input type="checkbox" id="giorno3-flag-venerdi">
                             <label for="giorno3-flag-venerdi">Venerdi</label>
                         </div>
-                        <button class="btn-reset-giorno" data-giorno="3" title="Reset giorno">&#x2715;</button>
+                        <button class="btn-reset-giorno" data-giorno="3" title="Reset giorno" aria-label="Reset giorno 3">&#x2715;</button>
                     </div>
                 </div>
                 <div class="giorno-body">
@@ -175,7 +179,7 @@
                         <input type="time" id="giorno3-uscita-effettiva" class="input-time">
                     </div>
                 </div>
-                <div class="giorno-risultati">
+                <div class="giorno-risultati" aria-live="polite">
                     <div class="risultato-item">
                         <span class="risultato-label">Eccesso Pausa</span>
                         <span class="risultato-valore" id="giorno3-eccesso">--:--</span>
@@ -197,7 +201,7 @@
 
             <div class="riepilogo-card">
                 <h2>Riepilogo Settimanale</h2>
-                <div class="riepilogo-body">
+                <div class="riepilogo-body" aria-live="polite">
                     <div class="riepilogo-item">
                         <span class="riepilogo-label">Eccesso/Difetto Cumulato Finale</span>
                         <span class="riepilogo-valore" id="delta-cumulato-finale">--:--:--</span>
@@ -208,7 +212,7 @@
                     </div>
                 </div>
                 <div class="riepilogo-actions">
-                    <button id="reset-btn" class="btn-reset">Reset Settimana</button>
+                    <button id="reset-btn" class="btn-reset" aria-label="Reset tutti i dati della settimana">Reset Settimana</button>
                 </div>
             </div>
         </main>
@@ -225,10 +229,11 @@
                     <a href="https://revolut.me/albert9u1r" target="_blank" rel="noopener">Revolut</a>
                 </span>
             </p>
-            <p>Orari Ufficio - PWA v1.0.0</p>
+            <p>Orari Ufficio - PWA v1.1.0</p>
         </footer>
     </div>
 
+    <script src="./js/theme-switcher.js"></script>
     <script src="./js/calculator.js"></script>
     <script src="./js/storage.js"></script>
     <script src="./js/app.js"></script>

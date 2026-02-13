@@ -117,6 +117,7 @@ orari-ufficio/
     app.js            # logica principale e UI
     calculator.js     # logica di calcolo (formule)
     storage.js        # gestione LocalStorage
+    theme-switcher.js # gestione tema light/dark
   sw.js               # Service Worker (cache offline)
   manifest.json       # manifest PWA
   icons/

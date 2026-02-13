@@ -40,7 +40,9 @@ Applicazione web progressiva (PWA) per tracciare gli orari di lavoro nei 3 giorn
 - Funzionamento offline tramite Service Worker
 - Persistenza dati locale (LocalStorage)
 - Installabile come app (PWA) con prompt di installazione
+- Tema chiaro/scuro con toggle manuale e rispetto preferenza di sistema
 - Layout responsive mobile-first
+- Accessibilita' WCAG 2.1 AA (focus visibili, contrasti verificati, aria-live, prefers-reduced-motion)
 - Nessuna dipendenza esterna
 - Meta tag di sicurezza e privacy: blocco indicizzazione motori di ricerca, blocco crawler AI (GPTBot, Google-Extended, CCBot, anthropic-ai, Claude-Web, PerplexityBot, Bytespider), referrer policy restrittiva, Content Security Policy (CSP)
 
@@ -55,7 +57,8 @@ orari-ufficio/
 ├── js/
 │   ├── app.js
 │   ├── calculator.js
-│   └── storage.js
+│   ├── storage.js
+│   └── theme-switcher.js
 ├── sw.js
 ├── manifest.json
 ├── LICENSE
