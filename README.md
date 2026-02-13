@@ -91,7 +91,6 @@ L'app e' composta solo da file statici. Puo' essere servita da qualsiasi web ser
 
 Se trovi utile questo progetto, offrimi un caffe:
 
-- [PayPal](https://paypal.me/AlbData)
 - [Revolut](https://revolut.me/albert9u1r)
 
 ## Licenza
