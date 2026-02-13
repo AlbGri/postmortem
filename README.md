@@ -42,12 +42,14 @@ Applicazione web progressiva (PWA) per tracciare gli orari di lavoro nei 3 giorn
 - Installabile come app (PWA) con prompt di installazione
 - Layout responsive mobile-first
 - Nessuna dipendenza esterna
+- Meta tag di sicurezza e privacy: blocco indicizzazione motori di ricerca, blocco crawler AI (GPTBot, Google-Extended, CCBot, anthropic-ai, Claude-Web, PerplexityBot, Bytespider), referrer policy restrittiva, Content Security Policy (CSP)
 
 ## Struttura del progetto
 
 ```
 orari-ufficio/
 ├── index.html
+├── favicon.png
 ├── css/
 │   └── style.css
 ├── js/
@@ -59,7 +61,6 @@ orari-ufficio/
 ├── LICENSE
 ├── PROMPT.md
 └── icons/
-    ├── icon.svg
     ├── icon-192.png
     └── icon-512.png
 ```

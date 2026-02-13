@@ -3,9 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Meta tag per prevenire indicizzazione e AI training -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai">
+    <meta name="googlebot" content="noindex, nofollow, noimageindex">
+    <meta name="bingbot" content="noindex, nofollow, noimageindex">
+    <meta name="yandex" content="noindex, nofollow, noimageindex">
+
+    <!-- Referrer policy per limitare informazioni su referer -->
+    <meta name="referrer" content="no-referrer">
+
+    <!-- Direttive specifiche per bloccare AI training -->
+    <meta name="ai-index" content="noindex">
+    <meta name="ai-training" content="deny">
+    <meta name="tdm-reservation" content="1">
+
+    <!-- Blocco crawler AI specifici per user-agent -->
+    <meta name="GPTBot" content="noindex, nofollow">
+    <meta name="Google-Extended" content="noindex, nofollow">
+    <meta name="CCBot" content="noindex, nofollow">
+    <meta name="anthropic-ai" content="noindex, nofollow">
+    <meta name="Claude-Web" content="noindex, nofollow">
+    <meta name="PerplexityBot" content="noindex, nofollow">
+    <meta name="Bytespider" content="noindex, nofollow">
+
+    <!-- Content Security Policy (CSP) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; upgrade-insecure-requests">
+
     <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
     <meta name="theme-color" content="#2c3e50">
     <title>Orari Ufficio</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./css/style.css">
 </head>

@@ -110,6 +110,7 @@ Campi calcolati automaticamente:
 ```
 orari-ufficio/
   index.html          # pagina unica dell'app
+  favicon.png         # favicon
   css/
     style.css         # stili
   js/

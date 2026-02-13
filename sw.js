@@ -1,4 +1,4 @@
-const CACHE_NAME = 'orari-ufficio-v1';
+const CACHE_NAME = 'orari-ufficio-v2';
 const urlsToCache = [
     './',
     './index.html',
@@ -6,7 +6,8 @@ const urlsToCache = [
     './js/app.js',
     './js/calculator.js',
     './js/storage.js',
-    './manifest.json'
+    './manifest.json',
+    './favicon.png'
 ];
 
 self.addEventListener('install', event => {
