@@ -5,12 +5,14 @@
 
 const App = (() => {
     let datiCorrente = null;
+    let deferredPrompt = null;
 
     function init() {
         datiCorrente = Storage.carica();
         aggiornaUI();
         agganciaEventi();
         registraServiceWorker();
+        gestisciInstallPrompt();
     }
 
     function agganciaEventi() {
@@ -93,6 +95,17 @@ const App = (() => {
         mostraRisultatiGiorno(1, dati1);
         mostraRisultatiGiorno(2, dati2);
         mostraRisultatiGiorno(3, dati3);
+
+        // Per il giorno 2, mostra "Uscita a pareggio" (compensa il delta del giorno 1)
+        const elPareggio = document.getElementById('giorno2-uscita-pareggio');
+        if (elPareggio) {
+            if (dati2.orarioUscitaPrevisto !== null && dati1.deltaGiornaliero !== null) {
+                const uscitaPareggio = dati2.orarioUscitaPrevisto - dati1.deltaCumulato;
+                elPareggio.textContent = Calculator.minutesToOrario(uscitaPareggio);
+            } else {
+                elPareggio.textContent = '--:--';
+            }
+        }
 
         // Per il giorno 3, l'uscita prevista tiene conto dei delta accumulati
         if (dati3.orarioUscitaPrevisto !== null) {
@@ -189,6 +202,34 @@ const App = (() => {
                 .then(registration => console.log('Service Worker registrato:', registration.scope))
                 .catch(error => console.error('Errore registrazione Service Worker:', error));
         }
+    }
+
+    function gestisciInstallPrompt() {
+        const banner = document.getElementById('install-banner');
+        const btnInstall = document.getElementById('install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (banner) banner.style.display = 'flex';
+        });
+
+        if (btnInstall) {
+            btnInstall.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(() => {
+                        deferredPrompt = null;
+                        if (banner) banner.style.display = 'none';
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (banner) banner.style.display = 'none';
+            deferredPrompt = null;
+        });
     }
 
     return {

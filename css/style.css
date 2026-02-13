@@ -306,11 +306,68 @@ main {
     transform: scale(0.98);
 }
 
+.risultato-pareggio {
+    border-top: 1px dashed var(--border-color);
+    padding-top: 0.5rem;
+}
+
+.risultato-pareggio .risultato-label {
+    font-style: italic;
+}
+
+.install-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    box-shadow: var(--shadow);
+    font-size: 0.9rem;
+}
+
+.btn-install {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-install:hover {
+    opacity: 0.9;
+}
+
 footer {
     text-align: center;
     padding: 2rem 0 1rem;
     color: #7f8c8d;
     font-size: 0.85rem;
+}
+
+.footer-support {
+    margin-bottom: 0.5rem;
+    color: #95a5a6;
+}
+
+.footer-links {
+    display: block;
+    margin-top: 0.3rem;
+}
+
+.footer-support a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-support a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 600px) {
