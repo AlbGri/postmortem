@@ -134,16 +134,16 @@ const App = (() => {
         if (totaleOre !== null) {
             if (totaleOre < 0) {
                 document.getElementById('totale-ore').textContent = 'Problema';
-                document.getElementById('totale-ore').style.color = 'red';
+                document.getElementById('totale-ore').classList.add('text-error');
             } else {
                 const ore = Math.floor(totaleOre / 60);
                 const minuti = Math.floor(totaleOre % 60);
                 document.getElementById('totale-ore').textContent = `${ore}:${String(minuti).padStart(2, '0')}`;
-                document.getElementById('totale-ore').style.color = '';
+                document.getElementById('totale-ore').classList.remove('text-error');
             }
         } else {
             document.getElementById('totale-ore').textContent = '--:--';
-            document.getElementById('totale-ore').style.color = '';
+            document.getElementById('totale-ore').classList.remove('text-error');
         }
 
         document.getElementById('delta-cumulato-finale').textContent =
@@ -211,7 +211,7 @@ const App = (() => {
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (banner) banner.style.display = 'flex';
+            if (banner) banner.classList.remove('hidden');
         });
 
         if (btnInstall) {
@@ -220,14 +220,14 @@ const App = (() => {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then(() => {
                         deferredPrompt = null;
-                        if (banner) banner.style.display = 'none';
+                        if (banner) banner.classList.add('hidden');
                     });
                 }
             });
         }
 
         window.addEventListener('appinstalled', () => {
-            if (banner) banner.style.display = 'none';
+            if (banner) banner.classList.add('hidden');
             deferredPrompt = null;
         });
     }
