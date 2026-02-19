@@ -49,152 +49,61 @@
         </header>
 
         <main>
-            <div class="giorno-card" id="card-giorno1">
-                <div class="giorno-header">
-                    <h2>Giorno 1</h2>
-                    <button class="btn-reset-giorno" data-giorno="1" title="Reset giorno" aria-label="Reset giorno 1">&#x2715;</button>
+            <div class="selettore-data-card">
+                <div class="selettore-data-header">
+                    <button type="button" class="btn-nav-data" id="btn-giorno-precedente" aria-label="Giorno precedente" title="Giorno precedente">&#x25C0;</button>
+                    <div class="data-corrente-wrapper">
+                        <label for="data-selezionata" class="sr-only">Data selezionata</label>
+                        <input type="date" id="data-selezionata" class="input-data">
+                        <span class="data-label" id="data-label" aria-live="polite"></span>
+                    </div>
+                    <button type="button" class="btn-nav-data" id="btn-giorno-successivo" aria-label="Giorno successivo" title="Giorno successivo">&#x25B6;</button>
                 </div>
-                <div class="giorno-body">
-                    <div class="form-group">
-                        <label for="giorno1-entrata">Entrata <span class="btn-ora-adesso" data-target="giorno1-entrata" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno1-entrata" class="input-time">
-                    </div>
-                    <details class="pranzo-details">
-                        <summary>&#x1F37D;&#xFE0F; Pausa Pranzo</summary>
-                        <div class="pranzo-fields">
-                            <div class="form-group">
-                                <label for="giorno1-uscita-pranzo">Uscita <span class="btn-ora-adesso" data-target="giorno1-uscita-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno1-uscita-pranzo" class="input-time">
-                            </div>
-                            <div class="form-group">
-                                <label for="giorno1-entrata-pranzo">Rientro <span class="btn-ora-adesso" data-target="giorno1-entrata-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno1-entrata-pranzo" class="input-time">
-                            </div>
-                        </div>
-                    </details>
-                    <div class="form-group">
-                        <label for="giorno1-uscita-effettiva">Uscita Effettiva <span class="btn-ora-adesso" data-target="giorno1-uscita-effettiva" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno1-uscita-effettiva" class="input-time">
-                    </div>
-                </div>
-                <div class="giorno-risultati" aria-live="polite">
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso Pausa</span>
-                        <span class="risultato-valore" id="giorno1-eccesso">--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Uscita Prevista</span>
-                        <span class="risultato-valore" id="giorno1-uscita-previsto">--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso/Difetto</span>
-                        <span class="risultato-valore" id="giorno1-delta">--:--:--</span>
-                    </div>
+                <div class="data-azioni">
+                    <button type="button" class="btn-oggi" id="btn-oggi" aria-label="Vai a oggi">Oggi</button>
                 </div>
             </div>
 
-            <div class="giorno-card" id="card-giorno2">
+            <div class="giorno-card" id="card-giorno">
                 <div class="giorno-header">
-                    <h2>Giorno 2</h2>
-                    <button class="btn-reset-giorno" data-giorno="2" title="Reset giorno" aria-label="Reset giorno 2">&#x2715;</button>
+                    <h2 id="giorno-titolo"></h2>
+                    <button class="btn-reset-giorno" id="btn-reset-giorno" title="Reset giorno" aria-label="Reset giorno">&#x2715;</button>
                 </div>
                 <div class="giorno-body">
                     <div class="form-group">
-                        <label for="giorno2-entrata">Entrata <span class="btn-ora-adesso" data-target="giorno2-entrata" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno2-entrata" class="input-time">
+                        <label for="entrata">Entrata <span class="btn-ora-adesso" data-target="entrata" title="Ora attuale">&#x1F552;</span></label>
+                        <input type="time" id="entrata" class="input-time">
                     </div>
-                    <details class="pranzo-details">
+                    <details class="pranzo-details" id="pranzo-details">
                         <summary>&#x1F37D;&#xFE0F; Pausa Pranzo</summary>
                         <div class="pranzo-fields">
                             <div class="form-group">
-                                <label for="giorno2-uscita-pranzo">Uscita <span class="btn-ora-adesso" data-target="giorno2-uscita-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno2-uscita-pranzo" class="input-time">
+                                <label for="uscita-pranzo">Uscita <span class="btn-ora-adesso" data-target="uscita-pranzo" title="Ora attuale">&#x1F552;</span></label>
+                                <input type="time" id="uscita-pranzo" class="input-time">
                             </div>
                             <div class="form-group">
-                                <label for="giorno2-entrata-pranzo">Rientro <span class="btn-ora-adesso" data-target="giorno2-entrata-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno2-entrata-pranzo" class="input-time">
+                                <label for="entrata-pranzo">Rientro <span class="btn-ora-adesso" data-target="entrata-pranzo" title="Ora attuale">&#x1F552;</span></label>
+                                <input type="time" id="entrata-pranzo" class="input-time">
                             </div>
                         </div>
                     </details>
                     <div class="form-group">
-                        <label for="giorno2-uscita-effettiva">Uscita Effettiva <span class="btn-ora-adesso" data-target="giorno2-uscita-effettiva" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno2-uscita-effettiva" class="input-time">
+                        <label for="uscita-effettiva">Uscita Effettiva <span class="btn-ora-adesso" data-target="uscita-effettiva" title="Ora attuale">&#x1F552;</span></label>
+                        <input type="time" id="uscita-effettiva" class="input-time">
                     </div>
                 </div>
                 <div class="giorno-risultati" aria-live="polite">
                     <div class="risultato-item">
                         <span class="risultato-label">Eccesso Pausa</span>
-                        <span class="risultato-valore" id="giorno2-eccesso">--:--</span>
+                        <span class="risultato-valore" id="eccesso">--:--</span>
                     </div>
                     <div class="risultato-item">
                         <span class="risultato-label">Uscita Prevista</span>
-                        <span class="risultato-valore" id="giorno2-uscita-previsto">--:--</span>
-                    </div>
-                    <div class="risultato-item risultato-pareggio">
-                        <span class="risultato-label">Uscita a pareggio</span>
-                        <span class="risultato-valore" id="giorno2-uscita-pareggio">--:--</span>
+                        <span class="risultato-valore" id="uscita-previsto">--:--</span>
                     </div>
                     <div class="risultato-item">
                         <span class="risultato-label">Eccesso/Difetto</span>
-                        <span class="risultato-valore" id="giorno2-delta">--:--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso/Difetto Cumulato</span>
-                        <span class="risultato-valore" id="giorno2-delta-cumulato">--:--:--</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="giorno-card" id="card-giorno3">
-                <div class="giorno-header">
-                    <h2>Giorno 3</h2>
-                    <div class="giorno-header-actions">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="giorno3-flag-venerdi">
-                            <label for="giorno3-flag-venerdi">Venerdi</label>
-                        </div>
-                        <button class="btn-reset-giorno" data-giorno="3" title="Reset giorno" aria-label="Reset giorno 3">&#x2715;</button>
-                    </div>
-                </div>
-                <div class="giorno-body">
-                    <div class="form-group">
-                        <label for="giorno3-entrata">Entrata <span class="btn-ora-adesso" data-target="giorno3-entrata" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno3-entrata" class="input-time">
-                    </div>
-                    <details class="pranzo-details">
-                        <summary>&#x1F37D;&#xFE0F; Pausa Pranzo</summary>
-                        <div class="pranzo-fields">
-                            <div class="form-group">
-                                <label for="giorno3-uscita-pranzo">Uscita <span class="btn-ora-adesso" data-target="giorno3-uscita-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno3-uscita-pranzo" class="input-time">
-                            </div>
-                            <div class="form-group">
-                                <label for="giorno3-entrata-pranzo">Rientro <span class="btn-ora-adesso" data-target="giorno3-entrata-pranzo" title="Ora attuale">&#x1F552;</span></label>
-                                <input type="time" id="giorno3-entrata-pranzo" class="input-time">
-                            </div>
-                        </div>
-                    </details>
-                    <div class="form-group">
-                        <label for="giorno3-uscita-effettiva">Uscita Effettiva <span class="btn-ora-adesso" data-target="giorno3-uscita-effettiva" title="Ora attuale">&#x1F552;</span></label>
-                        <input type="time" id="giorno3-uscita-effettiva" class="input-time">
-                    </div>
-                </div>
-                <div class="giorno-risultati" aria-live="polite">
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso Pausa</span>
-                        <span class="risultato-valore" id="giorno3-eccesso">--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Uscita Prevista</span>
-                        <span class="risultato-valore" id="giorno3-uscita-previsto">--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso/Difetto</span>
-                        <span class="risultato-valore" id="giorno3-delta">--:--:--</span>
-                    </div>
-                    <div class="risultato-item">
-                        <span class="risultato-label">Eccesso/Difetto Cumulato</span>
-                        <span class="risultato-valore" id="giorno3-delta-cumulato">--:--:--</span>
+                        <span class="risultato-valore" id="delta">--:--:--</span>
                     </div>
                 </div>
             </div>
@@ -202,13 +111,18 @@
             <div class="riepilogo-card">
                 <h2>Riepilogo Settimanale</h2>
                 <div class="riepilogo-body" aria-live="polite">
+                    <div class="riepilogo-giorni" id="riepilogo-giorni"></div>
                     <div class="riepilogo-item">
-                        <span class="riepilogo-label">Eccesso/Difetto Cumulato Finale</span>
+                        <span class="riepilogo-label">Eccesso/Difetto Cumulato</span>
                         <span class="riepilogo-valore" id="delta-cumulato-finale">--:--:--</span>
                     </div>
                     <div class="riepilogo-item">
-                        <span class="riepilogo-label">Totale Ore Settimanale</span>
+                        <span class="riepilogo-label">Totale Ore</span>
                         <span class="riepilogo-valore" id="totale-ore">--:--</span>
+                    </div>
+                    <div class="riepilogo-item risultato-pareggio hidden" id="uscita-minima-container">
+                        <span class="riepilogo-label">Uscita Minima Ultimo Giorno</span>
+                        <span class="riepilogo-valore" id="uscita-minima">--:--</span>
                     </div>
                 </div>
                 <div class="riepilogo-actions">

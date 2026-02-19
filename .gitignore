@@ -1,6 +1,10 @@
 # Claude Code
 .claude/
 
+# File per sessioni AI (locali, non pushati)
+STATO_PROGETTO.md
+PROMPT.md
+
 # IDE
 .vscode/
 .idea/

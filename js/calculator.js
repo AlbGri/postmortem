@@ -94,30 +94,45 @@ const Calculator = (() => {
         };
     }
 
-    function calcolaUscitaMinimaGiorno3(giorno3Data, deltaCumulatoGiorno2) {
-        const orarioUscitaPrevisto = calcolaOrarioUscitaPrevisto(
-            giorno3Data.entrata,
-            giorno3Data.uscitaPranzo,
-            giorno3Data.entrataPranzo,
-            giorno3Data.isVenerdi
-        );
+    function calcolaRiepilogoSettimana(giorniSettimana) {
+        let deltaCumulato = 0;
+        const giorniCalcolati = [];
 
-        if (orarioUscitaPrevisto === null) return null;
+        for (const giorno of giorniSettimana) {
+            const isVen = new Date(giorno.data + 'T00:00:00').getDay() === 5;
+            const datiConFlag = { ...giorno.dati, isVenerdi: isVen };
+            const risultati = calcolaDatiGiorno(datiConFlag, deltaCumulato);
+            deltaCumulato = risultati.deltaCumulato;
+            giorniCalcolati.push({
+                data: giorno.data,
+                risultati: risultati,
+                isVenerdi: isVen
+            });
+        }
 
-        return orarioUscitaPrevisto - deltaCumulatoGiorno2;
+        const oreContratto = giorniSettimana.reduce((acc, g) => {
+            const isVen = new Date(g.data + 'T00:00:00').getDay() === 5;
+            return acc + (isVen ? ORE_VENERDI : ORE_GIORNO_NORMALE);
+        }, 0);
+
+        return {
+            giorniCalcolati,
+            deltaCumulato,
+            oreContratto,
+            totaleOreLavorate: oreContratto + deltaCumulato
+        };
     }
 
-    function calcolaTotaleOreSettimanale(giorno1, giorno2, giorno3) {
-        const dati1 = calcolaDatiGiorno(giorno1);
-        const dati2 = calcolaDatiGiorno(giorno2, dati1.deltaCumulato);
-        const dati3 = calcolaDatiGiorno(giorno3, dati2.deltaCumulato);
-
-        if (dati3.deltaGiornaliero === null) return null;
-
-        const oreContratto = 36 * 60;
-        const totaleOre = oreContratto + dati3.deltaCumulato;
-
-        return totaleOre;
+    function calcolaUscitaMinima(datiUltimoGiorno, dataISO, deltaCumulatoPrecedente) {
+        const isVen = new Date(dataISO + 'T00:00:00').getDay() === 5;
+        const orarioUscitaPrevisto = calcolaOrarioUscitaPrevisto(
+            datiUltimoGiorno.entrata,
+            datiUltimoGiorno.uscitaPranzo,
+            datiUltimoGiorno.entrataPranzo,
+            isVen
+        );
+        if (orarioUscitaPrevisto === null) return null;
+        return orarioUscitaPrevisto - deltaCumulatoPrecedente;
     }
 
     return {
@@ -129,8 +144,8 @@ const Calculator = (() => {
         calcolaOrarioUscitaPrevisto,
         calcolaDeltaGiornaliero,
         calcolaDatiGiorno,
-        calcolaUscitaMinimaGiorno3,
-        calcolaTotaleOreSettimanale
+        calcolaRiepilogoSettimana,
+        calcolaUscitaMinima
     };
 })();
 

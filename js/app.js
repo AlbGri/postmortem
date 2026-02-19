@@ -1,37 +1,222 @@
 /**
  * Modulo principale dell'applicazione
- * Gestisce l'interfaccia utente e coordina i moduli calculator e storage
+ * Gestisce navigazione per data, form giorno singolo e riepilogo settimanale
  */
 
 const App = (() => {
-    let datiCorrente = null;
+    const GIORNI_IT = ['Domenica', 'Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato'];
+    const GIORNI_IT_SHORT = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+    const MESI_IT = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+                     'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+    const TIMEZONE = 'Europe/Rome';
+
+    let dataCorrente = null;
     let deferredPrompt = null;
 
     function init() {
-        datiCorrente = Storage.carica();
-        aggiornaUI();
+        Storage.migraDatiVecchi();
+        dataCorrente = _oggiISO();
+        caricaGiorno(dataCorrente);
         agganciaEventi();
         registraServiceWorker();
         gestisciInstallPrompt();
     }
 
-    function agganciaEventi() {
-        for (let i = 1; i <= 3; i++) {
-            document.getElementById(`giorno${i}-entrata`).addEventListener('input', () => onCampoModificato(i));
-            document.getElementById(`giorno${i}-uscita-pranzo`).addEventListener('input', () => onCampoModificato(i));
-            document.getElementById(`giorno${i}-entrata-pranzo`).addEventListener('input', () => onCampoModificato(i));
-            document.getElementById(`giorno${i}-uscita-effettiva`).addEventListener('input', () => onCampoModificato(i));
+    // --- NAVIGAZIONE DATA ---
+
+    function caricaGiorno(dataISO) {
+        dataCorrente = dataISO;
+        const dati = Storage.caricaGiorno(dataISO);
+        _popolaForm(dati);
+        _aggiornaLabelData(dataISO);
+        _aggiornaInputData(dataISO);
+        _aggiornaTitoloGiorno(dataISO);
+        aggiornaCalcoli();
+    }
+
+    function _popolaForm(dati) {
+        document.getElementById('entrata').value = dati.entrata || '';
+        document.getElementById('uscita-pranzo').value = dati.uscitaPranzo || '';
+        document.getElementById('entrata-pranzo').value = dati.entrataPranzo || '';
+        document.getElementById('uscita-effettiva').value = dati.uscitaEffettiva || '';
+
+        const details = document.getElementById('pranzo-details');
+        if (details) {
+            details.open = !!(dati.uscitaPranzo || dati.entrataPranzo);
+        }
+    }
+
+    function _aggiornaLabelData(dataISO) {
+        const d = new Date(dataISO + 'T00:00:00');
+        const label = `${GIORNI_IT[d.getDay()]} ${d.getDate()} ${MESI_IT[d.getMonth()]} ${d.getFullYear()}`;
+        document.getElementById('data-label').textContent = label;
+    }
+
+    function _aggiornaInputData(dataISO) {
+        document.getElementById('data-selezionata').value = dataISO;
+    }
+
+    function _aggiornaTitoloGiorno(dataISO) {
+        const d = new Date(dataISO + 'T00:00:00');
+        const nome = GIORNI_IT[d.getDay()];
+        const isVen = d.getDay() === 5;
+        document.getElementById('giorno-titolo').textContent = isVen ? `${nome} (6h)` : nome;
+    }
+
+    // --- SALVATAGGIO ---
+
+    function onCampoModificato() {
+        const dati = {
+            entrata: document.getElementById('entrata').value,
+            uscitaPranzo: document.getElementById('uscita-pranzo').value,
+            entrataPranzo: document.getElementById('entrata-pranzo').value,
+            uscitaEffettiva: document.getElementById('uscita-effettiva').value
+        };
+        Storage.salvaGiorno(dataCorrente, dati);
+        aggiornaCalcoli();
+    }
+
+    // --- CALCOLI ---
+
+    function aggiornaCalcoli() {
+        const giorniSettimana = Storage.caricaSettimana(dataCorrente);
+
+        // Delta cumulato dei giorni precedenti al giorno corrente
+        const giorniPrecedenti = giorniSettimana.filter(g => g.data < dataCorrente);
+        let deltaCumulatoPrecedente = 0;
+        for (const gp of giorniPrecedenti) {
+            const isVen = Storage.isVenerdi(gp.data);
+            const risultato = Calculator.calcolaDatiGiorno(
+                { ...gp.dati, isVenerdi: isVen },
+                deltaCumulatoPrecedente
+            );
+            deltaCumulatoPrecedente = risultato.deltaCumulato;
         }
 
-        document.getElementById('giorno3-flag-venerdi').addEventListener('change', () => onCampoModificato(3));
-        document.getElementById('reset-btn').addEventListener('click', resetSettimana);
+        // Calcolo giorno corrente
+        const isVen = Storage.isVenerdi(dataCorrente);
+        const datiGiorno = Storage.caricaGiorno(dataCorrente);
+        const datiConFlag = { ...datiGiorno, isVenerdi: isVen };
+        const risultatoGiorno = Calculator.calcolaDatiGiorno(datiConFlag, deltaCumulatoPrecedente);
+        _mostraRisultatiGiorno(risultatoGiorno, deltaCumulatoPrecedente);
 
-        document.querySelectorAll('.btn-reset-giorno').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const numeroGiorno = parseInt(btn.dataset.giorno);
-                resetGiorno(numeroGiorno);
-            });
+        // Riepilogo settimanale
+        const riepilogo = Calculator.calcolaRiepilogoSettimana(giorniSettimana);
+        _mostraRiepilogoSettimana(riepilogo);
+    }
+
+    function _mostraRisultatiGiorno(dati, deltaCumulatoPrecedente) {
+        const eccesso = dati.eccesso > 0 ? dati.eccesso : 0;
+        document.getElementById('eccesso').textContent =
+            eccesso > 0 ? Calculator.minutesToTimeShort(eccesso) : '--:--';
+
+        if (dati.orarioUscitaPrevisto !== null) {
+            const uscitaCorretta = dati.orarioUscitaPrevisto - deltaCumulatoPrecedente;
+            document.getElementById('uscita-previsto').textContent =
+                Calculator.minutesToOrario(uscitaCorretta);
+        } else {
+            document.getElementById('uscita-previsto').textContent = '--:--';
+        }
+
+        document.getElementById('delta').textContent =
+            dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaCumulato) : '--:--:--';
+    }
+
+    function _mostraRiepilogoSettimana(riepilogo) {
+        const container = document.getElementById('riepilogo-giorni');
+        container.textContent = '';
+
+        if (riepilogo.giorniCalcolati.length === 0) {
+            container.textContent = 'Nessun giorno compilato questa settimana.';
+        } else {
+            const ul = document.createElement('ul');
+            ul.className = 'riepilogo-lista-giorni';
+            ul.setAttribute('role', 'list');
+            for (const gc of riepilogo.giorniCalcolati) {
+                const li = document.createElement('li');
+                const d = new Date(gc.data + 'T00:00:00');
+                const nomeGiorno = GIORNI_IT_SHORT[d.getDay()];
+                const ore = gc.isVenerdi ? '6h' : '8h';
+                const deltaText = gc.risultati.deltaGiornaliero !== null
+                    ? Calculator.minutesToTime(gc.risultati.deltaGiornaliero)
+                    : 'incompleto';
+                li.textContent = `${nomeGiorno} ${d.getDate()}/${d.getMonth() + 1} (${ore}): ${deltaText}`;
+                if (gc.data === dataCorrente) {
+                    li.classList.add('giorno-corrente');
+                }
+                ul.appendChild(li);
+            }
+            container.appendChild(ul);
+        }
+
+        // Delta cumulato finale
+        document.getElementById('delta-cumulato-finale').textContent =
+            riepilogo.giorniCalcolati.length > 0
+                ? Calculator.minutesToTime(riepilogo.deltaCumulato)
+                : '--:--:--';
+
+        // Totale ore
+        const totaleEl = document.getElementById('totale-ore');
+        const haGiorniCompleti = riepilogo.giorniCalcolati.some(g => g.risultati.deltaGiornaliero !== null);
+        if (haGiorniCompleti) {
+            const ore = Math.floor(riepilogo.totaleOreLavorate / 60);
+            const min = Math.floor(riepilogo.totaleOreLavorate % 60);
+            totaleEl.textContent = `${ore}:${String(min).padStart(2, '0')}`;
+            totaleEl.classList.remove('text-error');
+        } else {
+            totaleEl.textContent = '--:--';
+            totaleEl.classList.remove('text-error');
+        }
+
+        // Uscita minima ultimo giorno
+        _mostraUscitaMinima(riepilogo);
+    }
+
+    function _mostraUscitaMinima(riepilogo) {
+        const container = document.getElementById('uscita-minima-container');
+        const valore = document.getElementById('uscita-minima');
+        const gc = riepilogo.giorniCalcolati;
+
+        if (gc.length < 2) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+
+        const ultimo = gc[gc.length - 1];
+        const penultimoCumulato = gc[gc.length - 2].risultati.deltaCumulato;
+        const datiUltimo = Storage.caricaGiorno(ultimo.data);
+
+        const uscitaMin = Calculator.calcolaUscitaMinima(datiUltimo, ultimo.data, penultimoCumulato);
+
+        valore.textContent = uscitaMin !== null
+            ? Calculator.minutesToOrario(uscitaMin)
+            : '--:--';
+    }
+
+    // --- EVENTI ---
+
+    function agganciaEventi() {
+        ['entrata', 'uscita-pranzo', 'entrata-pranzo', 'uscita-effettiva'].forEach(id => {
+            document.getElementById(id).addEventListener('input', onCampoModificato);
         });
+
+        document.getElementById('data-selezionata').addEventListener('change', (e) => {
+            if (e.target.value) caricaGiorno(e.target.value);
+        });
+        document.getElementById('btn-giorno-precedente').addEventListener('click', () => {
+            caricaGiorno(_giornoAdiacente(dataCorrente, -1));
+        });
+        document.getElementById('btn-giorno-successivo').addEventListener('click', () => {
+            caricaGiorno(_giornoAdiacente(dataCorrente, +1));
+        });
+        document.getElementById('btn-oggi').addEventListener('click', () => {
+            caricaGiorno(_oggiISO());
+        });
+
+        document.getElementById('btn-reset-giorno').addEventListener('click', resetGiorno);
+        document.getElementById('reset-btn').addEventListener('click', resetSettimana);
 
         document.querySelectorAll('.btn-ora-adesso').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -39,162 +224,47 @@ const App = (() => {
                 const targetId = btn.dataset.target;
                 const input = document.getElementById(targetId);
                 if (input) {
-                    const now = new Date();
-                    const hh = String(now.getHours()).padStart(2, '0');
-                    const mm = String(now.getMinutes()).padStart(2, '0');
-                    input.value = `${hh}:${mm}`;
+                    const oraRoma = new Intl.DateTimeFormat('it-IT', {
+                        timeZone: TIMEZONE, hour: '2-digit', minute: '2-digit', hour12: false
+                    }).format(new Date());
+                    input.value = oraRoma;
                     input.dispatchEvent(new Event('input'));
                 }
             });
         });
     }
 
-    function onCampoModificato(numeroGiorno) {
-        const giorno = `giorno${numeroGiorno}`;
-        datiCorrente[giorno].entrata = document.getElementById(`${giorno}-entrata`).value;
-        datiCorrente[giorno].uscitaPranzo = document.getElementById(`${giorno}-uscita-pranzo`).value;
-        datiCorrente[giorno].entrataPranzo = document.getElementById(`${giorno}-entrata-pranzo`).value;
-        datiCorrente[giorno].uscitaEffettiva = document.getElementById(`${giorno}-uscita-effettiva`).value;
-
-        if (numeroGiorno === 3) {
-            datiCorrente[giorno].isVenerdi = document.getElementById('giorno3-flag-venerdi').checked;
-        }
-
-        Storage.salva(datiCorrente);
-        aggiornaCalcoli();
-    }
-
-    function aggiornaUI() {
-        for (let i = 1; i <= 3; i++) {
-            const giorno = `giorno${i}`;
-            document.getElementById(`${giorno}-entrata`).value = datiCorrente[giorno].entrata || '';
-            document.getElementById(`${giorno}-uscita-pranzo`).value = datiCorrente[giorno].uscitaPranzo || '';
-            document.getElementById(`${giorno}-entrata-pranzo`).value = datiCorrente[giorno].entrataPranzo || '';
-            document.getElementById(`${giorno}-uscita-effettiva`).value = datiCorrente[giorno].uscitaEffettiva || '';
-        }
-
-        document.getElementById('giorno3-flag-venerdi').checked = datiCorrente.giorno3.isVenerdi || false;
-
-        // Apri il details pranzo se ci sono valori salvati
-        for (let i = 1; i <= 3; i++) {
-            const giorno = `giorno${i}`;
-            const details = document.getElementById(`${giorno}-entrata`).closest('.giorno-body').querySelector('.pranzo-details');
-            if (details && (datiCorrente[giorno].uscitaPranzo || datiCorrente[giorno].entrataPranzo)) {
-                details.open = true;
-            }
-        }
-
-        aggiornaCalcoli();
-    }
-
-    function aggiornaCalcoli() {
-        const dati1 = Calculator.calcolaDatiGiorno(datiCorrente.giorno1);
-        const dati2 = Calculator.calcolaDatiGiorno(datiCorrente.giorno2, dati1.deltaCumulato);
-        const dati3 = Calculator.calcolaDatiGiorno(datiCorrente.giorno3, dati2.deltaCumulato);
-
-        mostraRisultatiGiorno(1, dati1);
-        mostraRisultatiGiorno(2, dati2);
-        mostraRisultatiGiorno(3, dati3);
-
-        // Per il giorno 2, mostra "Uscita a pareggio" (compensa il delta del giorno 1)
-        const elPareggio = document.getElementById('giorno2-uscita-pareggio');
-        if (elPareggio) {
-            if (dati2.orarioUscitaPrevisto !== null && dati1.deltaGiornaliero !== null) {
-                const uscitaPareggio = dati2.orarioUscitaPrevisto - dati1.deltaCumulato;
-                elPareggio.textContent = Calculator.minutesToOrario(uscitaPareggio);
-            } else {
-                elPareggio.textContent = '--:--';
-            }
-        }
-
-        // Per il giorno 3, l'uscita prevista tiene conto dei delta accumulati
-        if (dati3.orarioUscitaPrevisto !== null) {
-            const uscitaPrevistaG3 = dati3.orarioUscitaPrevisto - dati2.deltaCumulato;
-            document.getElementById('giorno3-uscita-previsto').textContent =
-                Calculator.minutesToOrario(uscitaPrevistaG3);
-
-            // L'eccesso/difetto del G3 e' rispetto all'uscita prevista corretta
-            // Matematicamente: uscita_eff - (standard - cumulatoG2) = deltaG3 + cumulatoG2 = cumulatoG3
-            if (dati3.deltaGiornaliero !== null) {
-                document.getElementById('giorno3-delta').textContent =
-                    Calculator.minutesToTime(dati3.deltaCumulato);
-                const elCumulatoG3 = document.getElementById('giorno3-delta-cumulato');
-                if (elCumulatoG3) {
-                    elCumulatoG3.textContent = Calculator.minutesToTime(dati3.deltaCumulato);
-                }
-            }
-        }
-
-        const totaleOre = Calculator.calcolaTotaleOreSettimanale(
-            datiCorrente.giorno1,
-            datiCorrente.giorno2,
-            datiCorrente.giorno3
-        );
-
-        if (totaleOre !== null) {
-            if (totaleOre < 0) {
-                document.getElementById('totale-ore').textContent = 'Problema';
-                document.getElementById('totale-ore').classList.add('text-error');
-            } else {
-                const ore = Math.floor(totaleOre / 60);
-                const minuti = Math.floor(totaleOre % 60);
-                document.getElementById('totale-ore').textContent = `${ore}:${String(minuti).padStart(2, '0')}`;
-                document.getElementById('totale-ore').classList.remove('text-error');
-            }
-        } else {
-            document.getElementById('totale-ore').textContent = '--:--';
-            document.getElementById('totale-ore').classList.remove('text-error');
-        }
-
-        document.getElementById('delta-cumulato-finale').textContent =
-            dati3.deltaGiornaliero !== null ? Calculator.minutesToTime(dati3.deltaCumulato) : '--:--:--';
-    }
-
-    function mostraRisultatiGiorno(numeroGiorno, dati) {
-        const prefisso = `giorno${numeroGiorno}`;
-
-        const eccesso = dati.eccesso !== null && dati.eccesso > 0 ? dati.eccesso : 0;
-        document.getElementById(`${prefisso}-eccesso`).textContent =
-            eccesso > 0 ? Calculator.minutesToTimeShort(eccesso) : '--:--';
-
-        document.getElementById(`${prefisso}-uscita-previsto`).textContent =
-            dati.orarioUscitaPrevisto !== null ? Calculator.minutesToOrario(dati.orarioUscitaPrevisto) : '--:--';
-
-        document.getElementById(`${prefisso}-delta`).textContent =
-            dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaGiornaliero) : '--:--:--';
-
-        const elCumulato = document.getElementById(`${prefisso}-delta-cumulato`);
-        if (elCumulato) {
-            elCumulato.textContent =
-                dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaCumulato) : '--:--:--';
-        }
-    }
-
-    function resetGiorno(numeroGiorno) {
-        const giorno = `giorno${numeroGiorno}`;
-        datiCorrente[giorno] = {
-            entrata: '',
-            uscitaPranzo: '',
-            entrataPranzo: '',
-            uscitaEffettiva: '',
-            isVenerdi: false
-        };
-
-        // Chiudi il details pranzo
-        const details = document.getElementById(`${giorno}-entrata`).closest('.giorno-body').querySelector('.pranzo-details');
+    function resetGiorno() {
+        Storage.cancellaGiorno(dataCorrente);
+        const details = document.getElementById('pranzo-details');
         if (details) details.open = false;
-
-        Storage.salva(datiCorrente);
-        aggiornaUI();
+        caricaGiorno(dataCorrente);
     }
 
     function resetSettimana() {
         if (confirm('Vuoi davvero cancellare tutti i dati della settimana?')) {
-            Storage.reset();
-            datiCorrente = Storage.carica();
-            aggiornaUI();
+            const giorniSettimana = Storage.caricaSettimana(dataCorrente);
+            for (const g of giorniSettimana) {
+                Storage.cancellaGiorno(g.data);
+            }
+            caricaGiorno(dataCorrente);
         }
     }
+
+    // --- UTILITA ---
+
+    function _oggiISO() {
+        // Intl con locale sv-SE produce formato YYYY-MM-DD nativo
+        return new Intl.DateTimeFormat('sv-SE', { timeZone: TIMEZONE }).format(new Date());
+    }
+
+    function _giornoAdiacente(dataISO, offset) {
+        const d = new Date(dataISO + 'T00:00:00');
+        d.setDate(d.getDate() + offset);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    // --- SERVICE WORKER & INSTALL ---
 
     function registraServiceWorker() {
         if ('serviceWorker' in navigator) {
