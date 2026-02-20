@@ -123,18 +123,6 @@ const Calculator = (() => {
         };
     }
 
-    function calcolaUscitaMinima(datiUltimoGiorno, dataISO, deltaCumulatoPrecedente) {
-        const isVen = new Date(dataISO + 'T00:00:00').getDay() === 5;
-        const orarioUscitaPrevisto = calcolaOrarioUscitaPrevisto(
-            datiUltimoGiorno.entrata,
-            datiUltimoGiorno.uscitaPranzo,
-            datiUltimoGiorno.entrataPranzo,
-            isVen
-        );
-        if (orarioUscitaPrevisto === null) return null;
-        return orarioUscitaPrevisto - deltaCumulatoPrecedente;
-    }
-
     return {
         timeToMinutes,
         minutesToTime,
@@ -144,8 +132,7 @@ const Calculator = (() => {
         calcolaOrarioUscitaPrevisto,
         calcolaDeltaGiornaliero,
         calcolaDatiGiorno,
-        calcolaRiepilogoSettimana,
-        calcolaUscitaMinima
+        calcolaRiepilogoSettimana
     };
 })();
 

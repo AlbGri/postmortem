@@ -24,7 +24,7 @@ const Storage = (() => {
 
     function caricaSettimana(dataISO) {
         const tutti = _caricaTutti();
-        const { lunedi, venerdi } = _getLunediVenerdi(dataISO);
+        const { lunedi, venerdi } = getLunediVenerdi(dataISO);
         const risultato = [];
         const d = new Date(lunedi + 'T00:00:00');
         const fine = new Date(venerdi + 'T00:00:00');
@@ -63,8 +63,34 @@ const Storage = (() => {
         return false;
     }
 
+    function caricaMese(anno, mese) {
+        const tutti = _caricaTutti();
+        const risultato = {};
+        const prefisso = anno + '-' + String(mese + 1).padStart(2, '0') + '-';
+        for (const dataISO in tutti) {
+            if (dataISO.startsWith(prefisso)) {
+                risultato[dataISO] = tutti[dataISO];
+            }
+        }
+        return risultato;
+    }
+
     function isVenerdi(dataISO) {
         return new Date(dataISO + 'T00:00:00').getDay() === 5;
+    }
+
+    function caricaTutti() {
+        return _caricaTutti();
+    }
+
+    function importaDati(datiObj) {
+        const tutti = _caricaTutti();
+        for (const dataISO in datiObj) {
+            if (!_isGiornoVuoto(datiObj[dataISO])) {
+                tutti[dataISO] = datiObj[dataISO];
+            }
+        }
+        _salvaTutti(tutti);
     }
 
     // --- Funzioni private ---
@@ -91,7 +117,7 @@ const Storage = (() => {
         return !dati.entrata && !dati.uscitaPranzo && !dati.entrataPranzo && !dati.uscitaEffettiva;
     }
 
-    function _getLunediVenerdi(dataISO) {
+    function getLunediVenerdi(dataISO) {
         const d = new Date(dataISO + 'T00:00:00');
         const giorno = d.getDay();
         // getDay(): 0=dom, 1=lun, ..., 6=sab
@@ -117,10 +143,14 @@ const Storage = (() => {
         caricaGiorno,
         salvaGiorno,
         caricaSettimana,
+        caricaMese,
+        getLunediVenerdi,
         cancellaGiorno,
         getDatiGiornoVuoti,
         migraDatiVecchi,
-        isVenerdi
+        isVenerdi,
+        caricaTutti,
+        importaDati
     };
 })();
 

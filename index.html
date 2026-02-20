@@ -28,7 +28,7 @@
     <meta name="Bytespider" content="noindex, nofollow">
 
     <!-- Content Security Policy (CSP) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; upgrade-insecure-requests">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'">
 
     <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
     <meta name="theme-color" content="#2c3e50">
@@ -49,25 +49,14 @@
         </header>
 
         <main>
-            <div class="selettore-data-card">
-                <div class="selettore-data-header">
-                    <button type="button" class="btn-nav-data" id="btn-giorno-precedente" aria-label="Giorno precedente" title="Giorno precedente">&#x25C0;</button>
-                    <div class="data-corrente-wrapper">
-                        <label for="data-selezionata" class="sr-only">Data selezionata</label>
-                        <input type="date" id="data-selezionata" class="input-data">
-                        <span class="data-label" id="data-label" aria-live="polite"></span>
-                    </div>
-                    <button type="button" class="btn-nav-data" id="btn-giorno-successivo" aria-label="Giorno successivo" title="Giorno successivo">&#x25B6;</button>
-                </div>
-                <div class="data-azioni">
-                    <button type="button" class="btn-oggi" id="btn-oggi" aria-label="Vai a oggi">Oggi</button>
-                </div>
-            </div>
+            <div class="calendario-card" id="calendario-container" role="region" aria-label="Calendario mensile"></div>
+            <input type="hidden" id="data-selezionata">
+            <span class="sr-only" id="data-label" aria-live="polite"></span>
 
             <div class="giorno-card" id="card-giorno">
                 <div class="giorno-header">
                     <h2 id="giorno-titolo"></h2>
-                    <button class="btn-reset-giorno" id="btn-reset-giorno" title="Reset giorno" aria-label="Reset giorno">&#x2715;</button>
+                    <button class="btn-elimina btn-elimina-giorno" id="btn-reset-giorno" title="Elimina giorno" aria-label="Elimina dati giorno">Elimina</button>
                 </div>
                 <div class="giorno-body">
                     <div class="form-group">
@@ -109,7 +98,10 @@
             </div>
 
             <div class="riepilogo-card">
-                <h2>Riepilogo Settimanale</h2>
+                <div class="riepilogo-header">
+                    <h2 id="riepilogo-settimanale-titolo">Settimana</h2>
+                    <button id="reset-btn" class="btn-elimina" aria-label="Elimina dati settimana">Elimina</button>
+                </div>
                 <div class="riepilogo-body" aria-live="polite">
                     <div class="riepilogo-giorni" id="riepilogo-giorni"></div>
                     <div class="riepilogo-item">
@@ -120,13 +112,24 @@
                         <span class="riepilogo-label">Totale Ore</span>
                         <span class="riepilogo-valore" id="totale-ore">--:--</span>
                     </div>
-                    <div class="riepilogo-item risultato-pareggio hidden" id="uscita-minima-container">
-                        <span class="riepilogo-label">Uscita Minima Ultimo Giorno</span>
-                        <span class="riepilogo-valore" id="uscita-minima">--:--</span>
-                    </div>
                 </div>
-                <div class="riepilogo-actions">
-                    <button id="reset-btn" class="btn-reset" aria-label="Reset tutti i dati della settimana">Reset Settimana</button>
+            </div>
+
+            <div class="riepilogo-card riepilogo-mensile-card">
+                <div class="riepilogo-header">
+                    <h2 id="riepilogo-mensile-titolo">Mese</h2>
+                    <button id="reset-mese-btn" class="btn-elimina" aria-label="Elimina dati mese">Elimina</button>
+                </div>
+                <div class="riepilogo-body" aria-live="polite">
+                    <div class="riepilogo-giorni" id="riepilogo-giorni-mensile"></div>
+                    <div class="riepilogo-item">
+                        <span class="riepilogo-label">Eccesso/Difetto Cumulato</span>
+                        <span class="riepilogo-valore" id="delta-cumulato-mensile">--:--:--</span>
+                    </div>
+                    <div class="riepilogo-item">
+                        <span class="riepilogo-label">Totale Ore</span>
+                        <span class="riepilogo-valore" id="totale-ore-mensile">--:--</span>
+                    </div>
                 </div>
             </div>
         </main>
@@ -137,6 +140,10 @@
         </div>
 
         <footer>
+            <div class="footer-dati">
+                <button id="btn-esporta-csv" class="btn-footer" aria-label="Esporta dati in CSV">Esporta CSV</button>
+                <button id="btn-importa-csv" class="btn-footer" aria-label="Importa dati da CSV">Importa CSV</button>
+            </div>
             <p class="footer-support">
                 Ti e' utile? Offrimi un caffe!
                 <span class="footer-links">
@@ -150,6 +157,9 @@
     <script src="./js/theme-switcher.js"></script>
     <script src="./js/calculator.js"></script>
     <script src="./js/storage.js"></script>
+    <script src="./js/calendar.js"></script>
+    <script src="./js/csv.js"></script>
+    <script src="./js/notifications.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

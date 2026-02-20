@@ -16,8 +16,10 @@ const App = (() => {
     function init() {
         Storage.migraDatiVecchi();
         dataCorrente = _oggiISO();
+        Calendar.init('calendario-container', caricaGiorno);
         caricaGiorno(dataCorrente);
         agganciaEventi();
+        Notifier.init();
         registraServiceWorker();
         gestisciInstallPrompt();
     }
@@ -31,6 +33,7 @@ const App = (() => {
         _aggiornaLabelData(dataISO);
         _aggiornaInputData(dataISO);
         _aggiornaTitoloGiorno(dataISO);
+        Calendar.setDataSelezionata(dataISO);
         aggiornaCalcoli();
     }
 
@@ -74,6 +77,14 @@ const App = (() => {
         };
         Storage.salvaGiorno(dataCorrente, dati);
         aggiornaCalcoli();
+
+        if (dati.uscitaEffettiva) {
+            Notifier.cancelReminder();
+        } else if (dati.entrata) {
+            Notifier.scheduleReminder(dataCorrente, dati.entrata, Storage.isVenerdi(dataCorrente));
+        } else {
+            Notifier.cancelReminder();
+        }
     }
 
     // --- CALCOLI ---
@@ -103,6 +114,10 @@ const App = (() => {
         // Riepilogo settimanale
         const riepilogo = Calculator.calcolaRiepilogoSettimana(giorniSettimana);
         _mostraRiepilogoSettimana(riepilogo);
+
+        _mostraRiepilogoMensile();
+
+        Calendar.aggiornaDeltas();
     }
 
     function _mostraRisultatiGiorno(dati, deltaCumulatoPrecedente) {
@@ -123,6 +138,14 @@ const App = (() => {
     }
 
     function _mostraRiepilogoSettimana(riepilogo) {
+        const { lunedi, venerdi } = Storage.getLunediVenerdi(dataCorrente);
+        const lun = new Date(lunedi + 'T00:00:00');
+        const ven = new Date(venerdi + 'T00:00:00');
+        const range = String(lun.getDate()).padStart(2, '0') + '/' + String(lun.getMonth() + 1).padStart(2, '0') +
+            ' - ' + String(ven.getDate()).padStart(2, '0') + '/' + String(ven.getMonth() + 1).padStart(2, '0');
+
+        document.getElementById('riepilogo-settimanale-titolo').textContent = 'Settimana (' + range + ')';
+
         const container = document.getElementById('riepilogo-giorni');
         container.textContent = '';
 
@@ -168,31 +191,43 @@ const App = (() => {
             totaleEl.classList.remove('text-error');
         }
 
-        // Uscita minima ultimo giorno
-        _mostraUscitaMinima(riepilogo);
     }
 
-    function _mostraUscitaMinima(riepilogo) {
-        const container = document.getElementById('uscita-minima-container');
-        const valore = document.getElementById('uscita-minima');
-        const gc = riepilogo.giorniCalcolati;
+    function _mostraRiepilogoMensile() {
+        const d = new Date(dataCorrente + 'T00:00:00');
+        const anno = d.getFullYear();
+        const mese = d.getMonth();
 
-        if (gc.length < 2) {
-            container.classList.add('hidden');
-            return;
+        document.getElementById('riepilogo-mensile-titolo').textContent =
+            'Mese (' + String(mese + 1).padStart(2, '0') + '/' + anno + ')';
+
+        const datiMese = Storage.caricaMese(anno, mese);
+        const giorniMese = Object.keys(datiMese).sort().map(data => ({ data, dati: datiMese[data] }));
+        const riepilogo = Calculator.calcolaRiepilogoSettimana(giorniMese);
+
+        const container = document.getElementById('riepilogo-giorni-mensile');
+        container.textContent = '';
+
+        if (riepilogo.giorniCalcolati.length === 0) {
+            container.textContent = 'Nessun giorno compilato questo mese.';
+        } else {
+            container.textContent = riepilogo.giorniCalcolati.length + ' giorni compilati';
         }
 
-        container.classList.remove('hidden');
+        document.getElementById('delta-cumulato-mensile').textContent =
+            riepilogo.giorniCalcolati.length > 0
+                ? Calculator.minutesToTime(riepilogo.deltaCumulato)
+                : '--:--:--';
 
-        const ultimo = gc[gc.length - 1];
-        const penultimoCumulato = gc[gc.length - 2].risultati.deltaCumulato;
-        const datiUltimo = Storage.caricaGiorno(ultimo.data);
-
-        const uscitaMin = Calculator.calcolaUscitaMinima(datiUltimo, ultimo.data, penultimoCumulato);
-
-        valore.textContent = uscitaMin !== null
-            ? Calculator.minutesToOrario(uscitaMin)
-            : '--:--';
+        const totaleEl = document.getElementById('totale-ore-mensile');
+        const haGiorniCompleti = riepilogo.giorniCalcolati.some(g => g.risultati.deltaGiornaliero !== null);
+        if (haGiorniCompleti) {
+            const ore = Math.floor(riepilogo.totaleOreLavorate / 60);
+            const min = Math.floor(riepilogo.totaleOreLavorate % 60);
+            totaleEl.textContent = ore + ':' + String(min).padStart(2, '0');
+        } else {
+            totaleEl.textContent = '--:--';
+        }
     }
 
     // --- EVENTI ---
@@ -202,21 +237,14 @@ const App = (() => {
             document.getElementById(id).addEventListener('input', onCampoModificato);
         });
 
-        document.getElementById('data-selezionata').addEventListener('change', (e) => {
-            if (e.target.value) caricaGiorno(e.target.value);
-        });
-        document.getElementById('btn-giorno-precedente').addEventListener('click', () => {
-            caricaGiorno(_giornoAdiacente(dataCorrente, -1));
-        });
-        document.getElementById('btn-giorno-successivo').addEventListener('click', () => {
-            caricaGiorno(_giornoAdiacente(dataCorrente, +1));
-        });
-        document.getElementById('btn-oggi').addEventListener('click', () => {
-            caricaGiorno(_oggiISO());
-        });
-
         document.getElementById('btn-reset-giorno').addEventListener('click', resetGiorno);
         document.getElementById('reset-btn').addEventListener('click', resetSettimana);
+        document.getElementById('reset-mese-btn').addEventListener('click', resetMese);
+
+        document.getElementById('btn-esporta-csv').addEventListener('click', () => CsvManager.esporta());
+        document.getElementById('btn-importa-csv').addEventListener('click', () => {
+            CsvManager.importa(() => caricaGiorno(dataCorrente));
+        });
 
         document.querySelectorAll('.btn-ora-adesso').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -235,17 +263,41 @@ const App = (() => {
     }
 
     function resetGiorno() {
-        Storage.cancellaGiorno(dataCorrente);
-        const details = document.getElementById('pranzo-details');
-        if (details) details.open = false;
-        caricaGiorno(dataCorrente);
+        const d = new Date(dataCorrente + 'T00:00:00');
+        const label = GIORNI_IT[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1);
+        if (confirm('Vuoi davvero cancellare i dati di ' + label + '?')) {
+            Storage.cancellaGiorno(dataCorrente);
+            Notifier.cancelReminder();
+            const details = document.getElementById('pranzo-details');
+            if (details) details.open = false;
+            caricaGiorno(dataCorrente);
+        }
     }
 
     function resetSettimana() {
-        if (confirm('Vuoi davvero cancellare tutti i dati della settimana?')) {
+        const { lunedi, venerdi } = Storage.getLunediVenerdi(dataCorrente);
+        const lun = new Date(lunedi + 'T00:00:00');
+        const ven = new Date(venerdi + 'T00:00:00');
+        const range = lun.getDate() + '/' + (lun.getMonth() + 1) + ' - ' +
+            ven.getDate() + '/' + (ven.getMonth() + 1);
+        if (confirm('Vuoi davvero cancellare tutti i dati della settimana ' + range + '?')) {
             const giorniSettimana = Storage.caricaSettimana(dataCorrente);
             for (const g of giorniSettimana) {
                 Storage.cancellaGiorno(g.data);
+            }
+            caricaGiorno(dataCorrente);
+        }
+    }
+
+    function resetMese() {
+        const d = new Date(dataCorrente + 'T00:00:00');
+        const anno = d.getFullYear();
+        const mese = d.getMonth();
+        const label = MESI_IT[mese].charAt(0).toUpperCase() + MESI_IT[mese].slice(1) + ' ' + anno;
+        if (confirm('Vuoi davvero cancellare tutti i dati di ' + label + '?')) {
+            const datiMese = Storage.caricaMese(anno, mese);
+            for (const dataISO in datiMese) {
+                Storage.cancellaGiorno(dataISO);
             }
             caricaGiorno(dataCorrente);
         }
@@ -256,12 +308,6 @@ const App = (() => {
     function _oggiISO() {
         // Intl con locale sv-SE produce formato YYYY-MM-DD nativo
         return new Intl.DateTimeFormat('sv-SE', { timeZone: TIMEZONE }).format(new Date());
-    }
-
-    function _giornoAdiacente(dataISO, offset) {
-        const d = new Date(dataISO + 'T00:00:00');
-        d.setDate(d.getDate() + offset);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
     // --- SERVICE WORKER & INSTALL ---
