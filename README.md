@@ -39,6 +39,8 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 - **Riepilogo settimanale** con lista giorni, delta cumulato e totale ore
 - **Riepilogo mensile** con delta cumulato e totale ore del mese
 - **Eliminazione dati** con conferma per giorno, settimana e mese
+- **Export/Import CSV** per backup e condivisione dati (separatore `;` per Excel italiano)
+- **Notifica promemoria uscita** dopo 8h (6h venerdi) dall'orario di entrata (richiede HTTPS)
 - Inserimento rapido dell'ora attuale (click sull'orologio)
 - Pausa pranzo collassabile
 - Funzionamento offline tramite Service Worker
@@ -62,6 +64,8 @@ orari-ufficio/
 │   ├── app.js
 │   ├── calculator.js
 │   ├── calendar.js
+│   ├── csv.js
+│   ├── notifications.js
 │   ├── storage.js
 │   └── theme-switcher.js
 ├── sw.js
@@ -95,6 +99,7 @@ L'app e' composta solo da file statici. Puo' essere servita da qualsiasi web ser
 - JavaScript ES6+ (vanilla)
 - Service Worker API
 - LocalStorage API
+- Notification API
 - Web App Manifest
 
 ## Supportami
