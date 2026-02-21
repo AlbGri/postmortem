@@ -323,6 +323,7 @@ const App = (() => {
     async function _onLogout() {
         await Auth.logout();
         Storage.cancellaTutti();
+        _chiudiAuthModal();
         _mostraLogin();
         caricaGiorno(dataCorrente);
     }
