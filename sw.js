@@ -1,8 +1,10 @@
-const CACHE_NAME = 'orari-ufficio-v6';
+const CACHE_NAME = 'orari-ufficio-v9';
 const urlsToCache = [
     './',
     './index.html',
     './css/style.css',
+    './js/supabase.min.js',
+    './js/supabase-config.js',
     './js/theme-switcher.js',
     './js/app.js',
     './js/calculator.js',
@@ -10,6 +12,8 @@ const urlsToCache = [
     './js/calendar.js',
     './js/csv.js',
     './js/notifications.js',
+    './js/auth.js',
+    './js/api.js',
     './manifest.json',
     './favicon.png'
 ];
@@ -22,6 +26,14 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // Le chiamate a Supabase devono SEMPRE andare in rete
+    // (non ha senso restituire dati cached dal database)
+    if (event.request.url.includes('supabase.co')) {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+
+    // Per tutto il resto: cache-first (come prima)
     event.respondWith(
         caches.match(event.request)
             .then(response => {

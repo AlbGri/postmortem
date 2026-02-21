@@ -1,6 +1,6 @@
 /**
  * Modulo per export/import dati in formato CSV
- * Separatore: punto e virgola (compatibilita' Excel italiano)
+ * Separatore: punto e virgola (compatibilità Excel italiano)
  */
 
 const CsvManager = (() => {
@@ -79,7 +79,7 @@ const CsvManager = (() => {
         const righe = testo.replace(/\uFEFF/, '').split(/\r?\n/).filter(r => r.trim());
 
         if (righe.length < 2) {
-            alert('Il file CSV e\' vuoto o non ha dati.');
+            alert('Il file CSV è vuoto o non ha dati.');
             return null;
         }
 

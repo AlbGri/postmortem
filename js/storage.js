@@ -93,6 +93,20 @@ const Storage = (() => {
         _salvaTutti(tutti);
     }
 
+    function sostituisciTutti(datiObj) {
+        const nuovi = {};
+        for (const dataISO in datiObj) {
+            if (!_isGiornoVuoto(datiObj[dataISO])) {
+                nuovi[dataISO] = datiObj[dataISO];
+            }
+        }
+        _salvaTutti(nuovi);
+    }
+
+    function cancellaTutti() {
+        _salvaTutti({});
+    }
+
     // --- Funzioni private ---
 
     function _caricaTutti() {
@@ -150,7 +164,9 @@ const Storage = (() => {
         migraDatiVecchi,
         isVenerdi,
         caricaTutti,
-        importaDati
+        importaDati,
+        sostituisciTutti,
+        cancellaTutti
     };
 })();
 

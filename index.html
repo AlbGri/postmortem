@@ -28,7 +28,7 @@
     <meta name="Bytespider" content="noindex, nofollow">
 
     <!-- Content Security Policy (CSP) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; manifest-src 'self'; base-uri 'self'">
 
     <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
     <meta name="theme-color" content="#2c3e50">
@@ -41,14 +41,88 @@
     <div class="container">
         <header>
             <h1>Orari Ufficio</h1>
-            <p class="subtitle">Gestione orari settimanali</p>
+            <p class="subtitle" id="app-subtitle">Gestione orari settimanali</p>
+            <div class="user-bar hidden" id="user-bar">
+                <span id="user-alias-display"></span>
+                <button id="btn-logout" class="btn-logout">Esci</button>
+            </div>
+            <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
             <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambia tema" title="Cambia tema">
                 <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
                 <span class="sr-only">Cambia tema</span>
             </button>
         </header>
 
-        <main>
+        <!-- MODAL AUTH (overlay) -->
+        <div id="schermata-auth" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop" id="auth-backdrop"></div>
+            <div class="auth-overlay-content">
+                <button class="auth-overlay-close" id="btn-chiudi-auth" aria-label="Chiudi">&times;</button>
+            <div id="form-login" class="auth-form">
+                <h2>Accedi</h2>
+                <div class="form-group">
+                    <label for="login-alias">Alias</label>
+                    <input type="text" id="login-alias" class="input-auth" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="input-auth" autocomplete="current-password">
+                </div>
+                <button id="btn-login" class="btn-auth">Accedi</button>
+                <p class="auth-link">Non hai un account? <a href="#" id="link-registrati">Registrati</a></p>
+                <p class="auth-errore hidden" id="login-errore"></p>
+            </div>
+
+            <div id="form-registrazione" class="auth-form hidden">
+                <h2>Registrati</h2>
+                <div class="form-group">
+                    <label for="reg-nome">Nome</label>
+                    <input type="text" id="reg-nome" class="input-auth" placeholder="Il tuo nome">
+                </div>
+                <div class="form-group">
+                    <label for="reg-alias">Alias</label>
+                    <input type="text" id="reg-alias" class="input-auth" autocomplete="username" placeholder="Nome visibile nell'app">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" class="input-auth" autocomplete="new-password" placeholder="Minimo 6 caratteri">
+                </div>
+                <div class="form-group">
+                    <label for="reg-motivazione">Lascia un commento <span class="label-opzionale">(opzionale)</span></label>
+                    <input type="text" id="reg-motivazione" class="input-auth" placeholder="Non c'è motivo">
+                </div>
+                <p class="auth-privacy-note">Non chiedo email né cognome: la tua privacy è importante.</p>
+                <button id="btn-registra" class="btn-auth">Registrati</button>
+                <p class="auth-link">Hai già un account? <a href="#" id="link-login">Accedi</a></p>
+                <p class="auth-errore hidden" id="reg-errore"></p>
+            </div>
+
+            <div id="schermata-attesa" class="auth-form hidden">
+                <h2>Registrazione completata</h2>
+                <p class="auth-attesa-msg">Il tuo account è in attesa di approvazione da parte di Alberto.</p>
+                <button id="btn-logout-attesa" class="btn-auth btn-auth-secondary">Esci</button>
+            </div>
+            </div><!-- /auth-overlay-content -->
+        </div>
+
+        <!-- MODAL SYNC (scelta dati locali) -->
+        <div id="modal-sync" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop"></div>
+            <div class="auth-overlay-content">
+                <div class="auth-form">
+                    <h2>Dati locali trovati</h2>
+                    <p class="sync-msg" id="sync-msg"></p>
+                    <div class="sync-actions">
+                        <button id="btn-sync-carica" class="btn-auth">Carica nel cloud</button>
+                        <button id="btn-sync-elimina" class="btn-auth btn-auth-secondary">Elimina</button>
+                        <button id="btn-sync-annulla" class="btn-auth btn-auth-secondary">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCHERMATA APP (sempre visibile) -->
+        <main id="schermata-app">
             <div class="calendario-card" id="calendario-container" role="region" aria-label="Calendario mensile"></div>
             <input type="hidden" id="data-selezionata">
             <span class="sr-only" id="data-label" aria-live="polite"></span>
@@ -60,24 +134,24 @@
                 </div>
                 <div class="giorno-body">
                     <div class="form-group">
-                        <label for="entrata">Entrata <span class="btn-ora-adesso" data-target="entrata" title="Ora attuale">&#x1F552;</span></label>
+                        <label for="entrata">Entrata <button type="button" class="btn-ora-adesso" data-target="entrata" title="Inserisci ora attuale">Adesso</button></label>
                         <input type="time" id="entrata" class="input-time">
                     </div>
                     <details class="pranzo-details" id="pranzo-details">
                         <summary>&#x1F37D;&#xFE0F; Pausa Pranzo</summary>
                         <div class="pranzo-fields">
                             <div class="form-group">
-                                <label for="uscita-pranzo">Uscita <span class="btn-ora-adesso" data-target="uscita-pranzo" title="Ora attuale">&#x1F552;</span></label>
+                                <label for="uscita-pranzo">Uscita <button type="button" class="btn-ora-adesso" data-target="uscita-pranzo" title="Inserisci ora attuale">Adesso</button></label>
                                 <input type="time" id="uscita-pranzo" class="input-time">
                             </div>
                             <div class="form-group">
-                                <label for="entrata-pranzo">Rientro <span class="btn-ora-adesso" data-target="entrata-pranzo" title="Ora attuale">&#x1F552;</span></label>
+                                <label for="entrata-pranzo">Rientro <button type="button" class="btn-ora-adesso" data-target="entrata-pranzo" title="Inserisci ora attuale">Adesso</button></label>
                                 <input type="time" id="entrata-pranzo" class="input-time">
                             </div>
                         </div>
                     </details>
                     <div class="form-group">
-                        <label for="uscita-effettiva">Uscita Effettiva <span class="btn-ora-adesso" data-target="uscita-effettiva" title="Ora attuale">&#x1F552;</span></label>
+                        <label for="uscita-effettiva">Uscita Effettiva <button type="button" class="btn-ora-adesso" data-target="uscita-effettiva" title="Inserisci ora attuale">Adesso</button></label>
                         <input type="time" id="uscita-effettiva" class="input-time">
                     </div>
                 </div>
@@ -132,7 +206,7 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </main><!-- /schermata-app -->
 
         <div class="install-banner hidden" id="install-banner">
             <span>Installa l'app sul tuo dispositivo</span>
@@ -145,21 +219,25 @@
                 <button id="btn-importa-csv" class="btn-footer" aria-label="Importa dati da CSV">Importa CSV</button>
             </div>
             <p class="footer-support">
-                Ti e' utile? Offrimi un caffe!
+                Ti è utile? Offrimi un caffè!
                 <span class="footer-links">
                     <a href="https://revolut.me/albert9u1r" target="_blank" rel="noopener">Revolut</a>
                 </span>
             </p>
-            <p>Orari Ufficio - PWA v2.0.0</p>
+            <p>Orari Ufficio - PWA v2.1.0</p>
         </footer>
     </div>
 
+    <script src="./js/supabase.min.js"></script>
+    <script src="./js/supabase-config.js"></script>
     <script src="./js/theme-switcher.js"></script>
     <script src="./js/calculator.js"></script>
     <script src="./js/storage.js"></script>
     <script src="./js/calendar.js"></script>
     <script src="./js/csv.js"></script>
     <script src="./js/notifications.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/api.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 /**
  * Modulo per la notifica promemoria uscita
  * Quando l'utente inserisce l'orario di entrata per oggi,
- * dopo 8h (6h il venerdi') mostra una notifica per ricordare l'uscita
+ * dopo 8h (6h il venerdì) mostra una notifica per ricordare l'uscita
  */
 
 const Notifier = (() => {

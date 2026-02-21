@@ -5,7 +5,7 @@
 
 const Calendar = (() => {
     const GIORNI_HEADER = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-    const GIORNI_COMPLETI = ['Domenica', 'Lunedi', 'Martedi', 'Mercoledi', 'Giovedi', 'Venerdi', 'Sabato'];
+    const GIORNI_COMPLETI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
     const MESI_IT = [
         'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
         'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'
@@ -68,12 +68,23 @@ const Calendar = (() => {
     }
 
     function vaiAOggi() {
-        const oggi = _oggiISO();
+        let oggi = _oggiISO();
+        const d = new Date(oggi + 'T00:00:00');
+        const giorno = d.getDay();
+        if (giorno === 0) { d.setDate(d.getDate() - 2); oggi = _toISO(d); }
+        else if (giorno === 6) { d.setDate(d.getDate() - 1); oggi = _toISO(d); }
         const parts = oggi.split('-');
         meseCorrente = { anno: parseInt(parts[0]), mese: parseInt(parts[1]) - 1 };
         dataSelezionata = oggi;
         _renderCalendario();
         if (onGiornoSelezionato) onGiornoSelezionato(oggi);
+    }
+
+    function _toISO(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
     }
 
     // --- Funzioni private ---

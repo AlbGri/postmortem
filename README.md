@@ -20,7 +20,7 @@ Calcola automaticamente:
 - Permanenza standard: 8 ore (pausa pranzo di 30 minuti inclusa)
 - Eccesso pausa: tempo oltre i 30 minuti
 
-### Venerdi
+### Venerdì
 
 - Permanenza standard: 6 ore
 - Pausa pranzo: non inclusa (tutto il tempo conta come eccesso)
@@ -28,28 +28,29 @@ Calcola automaticamente:
 ### Minimo settimanale
 
 Calcolato dinamicamente dai giorni effettivamente compilati:
-- Per ogni giorno non-venerdi: 8h
-- Per ogni venerdi: 6h
+- Per ogni giorno non-venerdì: 8h
+- Per ogni venerdì: 6h
 
-## Funzionalita
+## Funzionalità
 
 - **Calendario mensile** collassabile con delta giornaliero colorato per ogni cella
 - **Navigazione tra mesi** con frecce e pulsante "Oggi"
-- **Auto-detect venerdi** dalla data (nessun checkbox manuale)
+- **Auto-detect venerdì** dalla data (nessun checkbox manuale)
 - **Riepilogo settimanale** con lista giorni, delta cumulato e totale ore
 - **Riepilogo mensile** con delta cumulato e totale ore del mese
 - **Eliminazione dati** con conferma per giorno, settimana e mese
 - **Export/Import CSV** per backup e condivisione dati (separatore `;` per Excel italiano)
-- **Notifica promemoria uscita** dopo 8h (6h venerdi) dall'orario di entrata (richiede HTTPS)
-- Inserimento rapido dell'ora attuale (click sull'orologio)
+- **Notifica promemoria uscita** dopo 8h (6h venerdì) dall'orario di entrata (richiede HTTPS)
+- **Login opzionale** con Supabase per backup cloud e sincronizzazione multi-dispositivo
+- **Registrazione con approvazione** manuale da parte dell'admin (no email richiesta)
+- Inserimento rapido dell'ora attuale (pulsante "Adesso")
 - Pausa pranzo collassabile
 - Funzionamento offline tramite Service Worker
-- Persistenza dati locale (LocalStorage) per data ISO
+- Persistenza dati locale (LocalStorage) + cloud opzionale (Supabase)
 - Installabile come app (PWA) con prompt di installazione
 - Tema chiaro/scuro con toggle manuale e rispetto preferenza di sistema
 - Layout responsive mobile-first
-- Accessibilita' WCAG 2.1 AA (focus visibili, contrasti verificati, aria-live, prefers-reduced-motion)
-- Nessuna dipendenza esterna
+- Accessibilità WCAG 2.1 AA (focus visibili, contrasti verificati, aria-live, prefers-reduced-motion)
 - Meta tag di sicurezza e privacy: blocco indicizzazione, blocco crawler AI, referrer policy restrittiva, Content Security Policy (CSP)
 
 ## Struttura del progetto
@@ -67,7 +68,11 @@ orari-ufficio/
 │   ├── csv.js
 │   ├── notifications.js
 │   ├── storage.js
-│   └── theme-switcher.js
+│   ├── theme-switcher.js
+│   ├── auth.js
+│   ├── api.js
+│   ├── supabase-config.js
+│   └── supabase.min.js
 ├── sw.js
 ├── manifest.json
 ├── LICENSE
@@ -86,11 +91,19 @@ orari-ufficio/
 5. I calcoli si aggiornano automaticamente
 6. I riepiloghi settimanale e mensile mostrano i totali in basso
 
-I dati vengono salvati automaticamente nel browser e persistono tra le sessioni.
+I dati vengono salvati automaticamente nel browser (LocalStorage).
+Per sincronizzare i dati tra dispositivi, cliccare "Accedi" e creare un account.
 
 ## Deploy
 
-L'app e' composta solo da file statici. Puo' essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
+L'app è composta solo da file statici. Può essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
+
+Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles` e `daily_entries`.
+
+## Versioni
+
+- **v2.0-local**: ultima versione solo localStorage, senza Supabase (tag git per rollback)
+- **v2.1.0**: login opzionale con Supabase, sincronizzazione cloud, modale auth
 
 ## Tech Stack
 
@@ -101,10 +114,11 @@ L'app e' composta solo da file statici. Puo' essere servita da qualsiasi web ser
 - LocalStorage API
 - Notification API
 - Web App Manifest
+- Supabase (Auth + PostgreSQL + RLS)
 
 ## Supportami
 
-Se trovi utile questo progetto, offrimi un caffe:
+Se trovi utile questo progetto, offrimi un caffè:
 
 - [Revolut](https://revolut.me/albert9u1r)
 
