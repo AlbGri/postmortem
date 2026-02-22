@@ -321,7 +321,11 @@ const App = (() => {
     }
 
     async function _onLogout() {
-        await Auth.logout();
+        try {
+            await Auth.logout();
+        } catch (e) {
+            // Ignora errori di rete: procedi con la pulizia locale
+        }
         Storage.cancellaTutti();
         _chiudiAuthModal();
         _mostraLogin();
