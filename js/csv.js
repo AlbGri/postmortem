@@ -66,7 +66,7 @@ const CsvManager = (() => {
 
                 if (confirm('Importare ' + numGiorni + ' giorni? I dati esistenti per le stesse date verranno sovrascritti.')) {
                     Storage.importaDati(dati);
-                    if (onComplete) onComplete();
+                    if (onComplete) onComplete(dati);
                 }
             };
             reader.readAsText(file, 'UTF-8');

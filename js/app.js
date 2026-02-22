@@ -51,6 +51,9 @@ const App = (() => {
             const profilo = await Auth.getProfilo();
             if (profilo && profilo.approved) {
                 await _attivaModalitaCloud(profilo);
+            } else if (profilo) {
+                _apriAuthModal();
+                _mostraAttesa();
             }
         }
     }
@@ -191,8 +194,13 @@ const App = (() => {
         _nascondiErrori();
     }
 
+    function _isSchermataAttesaVisibile() {
+        return !document.getElementById('schermata-attesa').classList.contains('hidden');
+    }
+
     function _chiudiAuthModal() {
         document.getElementById('schermata-auth').classList.add('hidden');
+        document.getElementById('btn-chiudi-auth').classList.remove('hidden');
     }
 
     function _mostraRegistrazione() {
@@ -206,6 +214,7 @@ const App = (() => {
         document.getElementById('form-login').classList.add('hidden');
         document.getElementById('form-registrazione').classList.add('hidden');
         document.getElementById('schermata-attesa').classList.remove('hidden');
+        document.getElementById('btn-chiudi-auth').classList.add('hidden');
     }
 
     function _mostraErrore(elementId, messaggio) {
@@ -226,13 +235,17 @@ const App = (() => {
         // Apri modale auth
         document.getElementById('btn-accedi').addEventListener('click', _apriAuthModal);
 
-        // Chiudi modale auth
-        document.getElementById('btn-chiudi-auth').addEventListener('click', _chiudiAuthModal);
-        document.getElementById('auth-backdrop').addEventListener('click', _chiudiAuthModal);
+        // Chiudi modale auth (bloccato durante schermata di attesa)
+        document.getElementById('btn-chiudi-auth').addEventListener('click', () => {
+            if (!_isSchermataAttesaVisibile()) _chiudiAuthModal();
+        });
+        document.getElementById('auth-backdrop').addEventListener('click', () => {
+            if (!_isSchermataAttesaVisibile()) _chiudiAuthModal();
+        });
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const modal = document.getElementById('schermata-auth');
-                if (!modal.classList.contains('hidden')) {
+                if (!modal.classList.contains('hidden') && !_isSchermataAttesaVisibile()) {
                     _chiudiAuthModal();
                 }
             }
@@ -326,7 +339,9 @@ const App = (() => {
         } catch (e) {
             // Ignora errori di rete: procedi con la pulizia locale
         }
-        Storage.cancellaTutti();
+        if (_isLoggedIn) {
+            Storage.cancellaTutti();
+        }
         _chiudiAuthModal();
         _mostraLogin();
         caricaGiorno(dataCorrente);
@@ -565,7 +580,12 @@ const App = (() => {
 
         document.getElementById('btn-esporta-csv').addEventListener('click', () => CsvManager.esporta());
         document.getElementById('btn-importa-csv').addEventListener('click', () => {
-            CsvManager.importa(() => caricaGiorno(dataCorrente));
+            CsvManager.importa((datiImportati) => {
+                if (_isLoggedIn && datiImportati) {
+                    Api.importaDati(datiImportati);
+                }
+                caricaGiorno(dataCorrente);
+            });
         });
 
         document.querySelectorAll('.btn-ora-adesso').forEach(btn => {
