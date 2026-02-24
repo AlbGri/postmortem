@@ -72,6 +72,7 @@ const App = (() => {
         caricaGiorno(dataCorrente);
         _agganciaEventiApp();
         Notifier.init();
+        Geofencing.init();
     }
 
     /**
@@ -594,6 +595,17 @@ const App = (() => {
                 caricaGiorno(dataCorrente);
             });
         });
+
+        const geoBtn = document.getElementById('geo-toggle');
+        if (geoBtn) {
+            if (Geofencing.isEnabled()) {
+                geoBtn.classList.add('geo-active');
+                geoBtn.setAttribute('aria-label', 'Disattiva promemoria posizione');
+                geoBtn.setAttribute('aria-pressed', 'true');
+                geoBtn.title = 'Disattiva promemoria posizione';
+            }
+            geoBtn.addEventListener('click', () => Geofencing.toggle());
+        }
 
         document.querySelectorAll('.btn-ora-adesso').forEach(btn => {
             btn.addEventListener('click', (e) => {

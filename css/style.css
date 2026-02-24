@@ -875,10 +875,16 @@ footer {
     border-width: 0;
 }
 
-.theme-toggle {
+.header-toggles {
     position: absolute;
     top: 1.5rem;
     right: 0;
+    display: flex;
+    gap: 0.4rem;
+}
+
+.geo-toggle,
+.theme-toggle {
     background: transparent;
     border: 1px solid var(--border-color);
     border-radius: 4px;
@@ -892,9 +898,21 @@ footer {
     transition: background-color 0.2s, border-color 0.2s;
 }
 
+.geo-toggle:hover,
 .theme-toggle:hover {
     background-color: var(--surface-color);
     border-color: var(--secondary-color);
+}
+
+.geo-toggle.geo-active {
+    border-color: var(--success-color);
+    background-color: rgba(39, 174, 96, 0.1);
+}
+
+.geo-icon::before {
+    content: '\1F4CD';
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
 .theme-icon {

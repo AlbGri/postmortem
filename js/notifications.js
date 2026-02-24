@@ -80,10 +80,13 @@ const Notifier = (() => {
         const dati = Storage.caricaGiorno(dataISO);
         if (dati.uscitaEffettiva) return;
 
-        if (Notification.permission === 'granted') {
-            new Notification('Orari Ufficio', {
-                body: 'Ricordati di inserire l\'orario di uscita!',
-                icon: './favicon.png'
+        if (!('Notification' in window)) return;
+        if (Notification.permission === 'granted' && navigator.serviceWorker) {
+            navigator.serviceWorker.ready.then(function (reg) {
+                reg.showNotification('Orari Ufficio', {
+                    body: 'Ricordati di inserire l\'orario di uscita!',
+                    icon: './favicon.png'
+                });
             });
         }
     }

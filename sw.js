@@ -1,4 +1,4 @@
-const CACHE_NAME = 'orari-ufficio-v13';
+const CACHE_NAME = 'orari-ufficio-v14';
 const urlsToCache = [
     './',
     './index.html',
@@ -11,6 +11,7 @@ const urlsToCache = [
     './js/storage.js',
     './js/calendar.js',
     './js/csv.js',
+    './js/geofencing.js',
     './js/notifications.js',
     './js/auth.js',
     './js/api.js',

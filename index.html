@@ -47,10 +47,16 @@
                 <button id="btn-logout" class="btn-logout">Esci</button>
             </div>
             <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
-            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambia tema" title="Cambia tema">
-                <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
-                <span class="sr-only">Cambia tema</span>
-            </button>
+            <div class="header-toggles">
+                <button type="button" class="geo-toggle" id="geo-toggle" aria-label="Attiva promemoria posizione" aria-pressed="false" title="Attiva promemoria posizione">
+                    <span class="geo-icon" id="geo-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Promemoria posizione</span>
+                </button>
+                <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambia tema" title="Cambia tema">
+                    <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Cambia tema</span>
+                </button>
+            </div>
         </header>
 
         <!-- MODAL AUTH (overlay) -->
@@ -236,6 +242,7 @@
     <script src="./js/storage.js"></script>
     <script src="./js/calendar.js"></script>
     <script src="./js/csv.js"></script>
+    <script src="./js/geofencing.js"></script>
     <script src="./js/notifications.js"></script>
     <script src="./js/auth.js"></script>
     <script src="./js/api.js"></script>
