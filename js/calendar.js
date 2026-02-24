@@ -312,7 +312,8 @@ const Calendar = (() => {
             const risultati = Calculator.calcolaDatiGiorno(datiConFlag, 0);
             const minuti = risultati.deltaGiornaliero;
 
-            deltaEl.textContent = _formatDeltaBreve(minuti);
+            const sottoMinimo = minuti !== null && minuti < -120;
+            deltaEl.textContent = _formatDeltaBreve(minuti) + (sottoMinimo ? ' \u26A0' : '');
             deltaEl.className = 'calendario-giorno-delta';
             if (minuti !== null && minuti >= 0) deltaEl.classList.add('delta-positivo');
             if (minuti !== null && minuti < 0) deltaEl.classList.add('delta-negativo');

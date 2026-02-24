@@ -313,6 +313,13 @@ main {
     color: var(--danger-color);
 }
 
+.avviso-minimo {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0;
+    text-align: center;
+}
+
 /* === RIEPILOGO LISTA GIORNI === */
 
 .riepilogo-giorni {

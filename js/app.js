@@ -470,6 +470,13 @@ const App = (() => {
 
         document.getElementById('delta').textContent =
             dati.deltaGiornaliero !== null ? Calculator.minutesToTime(dati.deltaCumulato) : '--:--:--';
+
+        const avviso = document.getElementById('avviso-minimo');
+        if (dati.deltaGiornaliero !== null && dati.deltaGiornaliero < -120) {
+            avviso.classList.remove('hidden');
+        } else {
+            avviso.classList.add('hidden');
+        }
     }
 
     function _mostraRiepilogoSettimana(riepilogo) {
