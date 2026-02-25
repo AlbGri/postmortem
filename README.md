@@ -41,6 +41,7 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 - **Eliminazione dati** con conferma per giorno, settimana e mese
 - **Export/Import CSV** per backup e condivisione dati (separatore `;` per Excel italiano)
 - **Notifica promemoria uscita** dopo 8h (6h venerdì) dall'orario di entrata (richiede HTTPS)
+- **Promemoria geofencing** check GPS ogni 10 minuti tra le 08-10 nei giorni feriali, notifica se nel raggio dell'ufficio (richiede app/tab aperta)
 - **Login opzionale** con Supabase per backup cloud e sincronizzazione multi-dispositivo
 - **Registrazione con approvazione** manuale da parte dell'admin (no email richiesta)
 - Inserimento rapido dell'ora attuale (pulsante "Adesso")
@@ -66,6 +67,7 @@ orari-ufficio/
 │   ├── calculator.js
 │   ├── calendar.js
 │   ├── csv.js
+│   ├── geofencing.js
 │   ├── notifications.js
 │   ├── storage.js
 │   ├── theme-switcher.js
@@ -113,6 +115,7 @@ Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles
 - Service Worker API
 - LocalStorage API
 - Notification API
+- Geolocation API
 - Web App Manifest
 - Supabase (Auth + PostgreSQL + RLS)
 
