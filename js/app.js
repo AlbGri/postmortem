@@ -703,6 +703,16 @@ const App = (() => {
                 .then(registration => console.log('Service Worker registrato:', registration.scope))
                 .catch(error => console.error('Errore registrazione Service Worker:', error));
         }
+
+        // iOS bfcache: quando la pagina viene ripristinata da cache,
+        // ricalcola la data e ricarica il form per evitare dati stale
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                const nuovaData = _oggiLavorativoISO();
+                dataCorrente = nuovaData;
+                caricaGiorno(dataCorrente);
+            }
+        });
     }
 
     function gestisciInstallPrompt() {
