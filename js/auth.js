@@ -148,9 +148,12 @@ const Auth = (() => {
      * (la policy filtra automaticamente per id = auth.uid())
      */
     async function getProfilo() {
+        const sessione = await getSessione();
+        if (!sessione) return null;
         const { data, error } = await _supabase
             .from('profiles')
             .select('*')
+            .eq('id', sessione.user.id)
             .single();
 
         if (error) return null;
