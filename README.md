@@ -127,7 +127,7 @@ Se trovi utile questo progetto, offrimi un caffè:
 
 ## Licenza
 
-[MIT](LICENSE)
+[CC BY-NC-SA 4.0](LICENSE)
 
 ## Autore
 
