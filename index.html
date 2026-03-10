@@ -48,6 +48,13 @@
                 <button id="btn-logout" class="btn-logout">Esci</button>
             </div>
             <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
+            <div class="header-toggles-left">
+                <button type="button" class="msg-toggle hidden" id="msg-toggle" aria-label="Messaggi" title="Messaggi">
+                    <span class="msg-icon" aria-hidden="true"></span>
+                    <span class="msg-badge hidden" id="msg-badge">0</span>
+                    <span class="sr-only">Messaggi</span>
+                </button>
+            </div>
             <div class="header-toggles">
                 <button type="button" class="geo-toggle" id="geo-toggle" aria-label="Attiva promemoria posizione" aria-pressed="false" title="Attiva promemoria posizione">
                     <span class="geo-icon" id="geo-icon" aria-hidden="true"></span>
@@ -124,6 +131,39 @@
                         <button id="btn-sync-carica" class="btn-auth">Carica nel cloud</button>
                         <button id="btn-sync-elimina" class="btn-auth btn-auth-secondary">Elimina</button>
                         <button id="btn-sync-annulla" class="btn-auth btn-auth-secondary">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL MESSAGGI -->
+        <div id="modal-messaggi" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop" id="msg-backdrop"></div>
+            <div class="auth-overlay-content msg-overlay-content">
+                <!-- Vista lista utenti (admin) / messaggio vuoto (utente) -->
+                <div id="msg-lista-view">
+                    <div class="auth-form msg-form">
+                        <h2>Messaggi</h2>
+                        <div id="msg-lista-utenti" class="msg-lista-utenti"></div>
+                    </div>
+                </div>
+                <!-- Vista chat -->
+                <div id="msg-chat-view" class="hidden">
+                    <div class="auth-form msg-form msg-chat-form">
+                        <div class="msg-chat-header">
+                            <button id="msg-btn-indietro" class="msg-btn-indietro" aria-label="Torna alla lista">&larr;</button>
+                            <h2 id="msg-chat-titolo"></h2>
+                            <button id="msg-btn-chiudi-conv" class="msg-btn-chiudi-conv hidden">Chiudi</button>
+                            <button id="msg-chiudi" class="auth-overlay-close" aria-label="Chiudi">&times;</button>
+                        </div>
+                        <div id="msg-chat-messaggi" class="msg-chat-messaggi"></div>
+                        <div id="msg-input-bar" class="msg-input-bar">
+                            <input type="text" id="msg-input" class="input-auth" placeholder="Scrivi un messaggio..." autocomplete="off">
+                            <button id="msg-btn-invia" class="btn-auth msg-btn-invia" aria-label="Invia">Invia</button>
+                        </div>
+                        <div id="msg-closed-bar" class="msg-closed-bar hidden">
+                            <p>Conversazione chiusa.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,6 +288,7 @@
     <script src="./js/notifications.js"></script>
     <script src="./js/auth.js"></script>
     <script src="./js/api.js"></script>
+    <script src="./js/messaging.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

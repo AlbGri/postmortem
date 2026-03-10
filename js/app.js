@@ -102,6 +102,10 @@ const App = (() => {
         // Chiudi modale auth se aperto
         _chiudiAuthModal();
 
+        // Attiva messaggistica
+        document.getElementById('msg-toggle').classList.remove('hidden');
+        Messaging.init(_supabaseClient, profilo);
+
         // Ricarica il giorno corrente con i dati sincronizzati
         caricaGiorno(dataCorrente);
     }
@@ -342,6 +346,8 @@ const App = (() => {
         }
         if (_isLoggedIn) {
             Storage.cancellaTutti();
+            Messaging.destroy();
+            document.getElementById('msg-toggle').classList.add('hidden');
         }
         _chiudiAuthModal();
         _mostraLogin();
