@@ -98,6 +98,8 @@ Per sincronizzare i dati tra dispositivi, cliccare "Accedi" e creare un account.
 
 ## Deploy
 
+**Live**: [albgri.github.io/orari-ufficio](https://albgri.github.io/orari-ufficio/)
+
 L'app è composta solo da file statici. Può essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
 
 Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles` e `daily_entries`.
