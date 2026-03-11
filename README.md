@@ -78,7 +78,7 @@ orari-ufficio/
 ├── sw.js
 ├── manifest.json
 ├── LICENSE
-├── PROMPT.md
+├── CHANGELOG.md
 └── icons/
     ├── icon-192.png
     └── icon-512.png
@@ -104,8 +104,11 @@ Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles
 
 ## Versioni
 
-- **v2.0-local**: ultima versione solo localStorage, senza Supabase (tag git per rollback)
-- **v2.1.0**: login opzionale con Supabase, sincronizzazione cloud, modale auth
+Vedi [CHANGELOG.md](CHANGELOG.md) per la lista completa delle versioni e delle modifiche.
+
+Tag git di riferimento:
+- **v1.0-static**: app statica pre-redesign
+- **v2.0-local**: ultima versione solo localStorage, senza Supabase
 
 ## Tech Stack
 
