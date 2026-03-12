@@ -218,6 +218,83 @@ const Messaging = (() => {
         // Mostra area broadcast per admin
         const broadcastArea = document.getElementById('msg-broadcast-area');
         if (broadcastArea) broadcastArea.classList.remove('hidden');
+
+        // Carica utenti in attesa di approvazione
+        await _mostraUtentiInAttesa();
+    }
+
+    // ==========================================
+    // ADMIN: UTENTI IN ATTESA DI APPROVAZIONE
+    // ==========================================
+
+    async function _mostraUtentiInAttesa() {
+        const area = document.getElementById('msg-attesa-area');
+        const container = document.getElementById('msg-lista-attesa');
+
+        const { data: inAttesa, error } = await _supabase
+            .from('profiles')
+            .select('id, alias, nome, motivazione, created_at')
+            .eq('approved', false)
+            .order('created_at');
+
+        if (error || !inAttesa || inAttesa.length === 0) {
+            area.classList.add('hidden');
+            return;
+        }
+
+        area.classList.remove('hidden');
+        container.textContent = '';
+
+        for (const utente of inAttesa) {
+            const div = document.createElement('div');
+            div.className = 'msg-utente-item msg-attesa-item';
+
+            const info = document.createElement('div');
+            info.className = 'msg-attesa-info';
+            const data = new Date(utente.created_at).toLocaleDateString('it-IT');
+            info.innerHTML = '<strong>' + _escapeHtml(utente.alias) + '</strong> (' + _escapeHtml(utente.nome) + ')' +
+                '<br><small>' + data + (utente.motivazione ? ' - ' + _escapeHtml(utente.motivazione) : '') + '</small>';
+
+            const azioni = document.createElement('div');
+            azioni.className = 'msg-attesa-azioni';
+
+            const btnApprova = document.createElement('button');
+            btnApprova.className = 'msg-attesa-btn msg-attesa-approva';
+            btnApprova.textContent = 'Approva';
+            btnApprova.addEventListener('click', () => _gestisciApprovazione(utente, div));
+
+            azioni.appendChild(btnApprova);
+            div.appendChild(info);
+            div.appendChild(azioni);
+            container.appendChild(div);
+        }
+    }
+
+    async function _gestisciApprovazione(utente, elemento) {
+        const btn = elemento.querySelector('.msg-attesa-btn');
+        btn.disabled = true;
+
+        const { error } = await _supabase
+            .from('profiles')
+            .update({ approved: true })
+            .eq('id', utente.id);
+
+        if (error) {
+            console.error('Errore approvazione:', error);
+            btn.disabled = false;
+            return;
+        }
+
+        elemento.remove();
+
+        // Se non ci sono piu' utenti in attesa, nascondi la sezione
+        const container = document.getElementById('msg-lista-attesa');
+        if (container.children.length === 0) {
+            document.getElementById('msg-attesa-area').classList.add('hidden');
+        }
+
+        // Aggiorna la lista utenti approvati
+        await _mostraListaUtenti();
     }
 
     // ==========================================
