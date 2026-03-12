@@ -885,7 +885,7 @@ footer {
 
 
 .geo-icon::before {
-    content: '\1F4CD';
+    content: '\1F4CD\FE0E';
     font-size: 1.2rem;
     line-height: 1;
 }
@@ -898,11 +898,11 @@ footer {
 }
 
 .theme-icon.light::before {
-    content: '\2600';
+    content: '\2600\FE0E';
 }
 
 .theme-icon.dark::before {
-    content: '\1F319';
+    content: '\1F319\FE0E';
 }
 
 .theme-icon.rotating {
@@ -989,14 +989,6 @@ footer {
 
 .hamburger-item:hover {
     background-color: var(--surface-color);
-}
-
-.hamburger-item .geo-icon::before {
-    font-size: 1.1rem;
-}
-
-.hamburger-item .theme-icon {
-    font-size: 1.1rem;
 }
 
 .hamburger-item.geo-active {
@@ -1121,10 +1113,24 @@ footer {
     border-color: var(--secondary-color);
 }
 
-.msg-icon::before {
-    content: '\2709';
-    font-size: 1.2rem;
-    line-height: 1;
+.msg-icon {
+    display: block;
+    width: 18px;
+    height: 14px;
+    border: 2px solid var(--text-color);
+    border-radius: 2px;
+    position: relative;
+}
+
+.msg-icon::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top: 7px solid var(--text-color);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
 }
 
 .msg-badge {
