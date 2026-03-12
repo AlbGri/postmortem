@@ -1266,6 +1266,35 @@ footer {
     font-size: 0.85rem;
 }
 
+.msg-broadcast-area {
+    margin-top: 0.5rem;
+}
+
+.msg-broadcast-area h3 {
+    font-size: 0.95rem;
+    margin: 0.5rem 0;
+}
+
+.msg-broadcast-area hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 0.75rem 0;
+}
+
+.msg-broadcast-input {
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.msg-btn-broadcast {
+    width: 100%;
+    padding: 0.5rem;
+}
+
 :root[data-theme="light"] {
     --primary-color: #2c3e50;
     --secondary-color: #3498db;

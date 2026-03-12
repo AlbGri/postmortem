@@ -214,6 +214,10 @@ const Messaging = (() => {
             btn.addEventListener('click', () => _apriChat(utente.id, utente.alias));
             container.appendChild(btn);
         }
+
+        // Mostra area broadcast per admin
+        const broadcastArea = document.getElementById('msg-broadcast-area');
+        if (broadcastArea) broadcastArea.classList.remove('hidden');
     }
 
     // ==========================================
@@ -254,7 +258,7 @@ const Messaging = (() => {
     // ==========================================
 
     async function _apriChat(userId, alias) {
-        _conversazioneAperta = { userId, alias, closed: false, conversationId: null };
+        _conversazioneAperta = { userId, alias, closed: true, conversationId: null };
 
         const listaView = document.getElementById('msg-lista-view');
         const chatView = document.getElementById('msg-chat-view');
@@ -333,7 +337,7 @@ const Messaging = (() => {
             inputBar.classList.remove('hidden');
             closedBar.classList.add('hidden');
             btnChiudi.classList.remove('hidden');
-            btnChiudi.textContent = _conversazioneAperta.closed ? 'Riapri' : 'Chiudi';
+            btnChiudi.textContent = _conversazioneAperta.closed ? 'Abilita risposta' : 'Blocca risposta';
         } else {
             // Utente: se chiusa, nascondi input e mostra avviso
             btnChiudi.classList.add('hidden');
@@ -380,7 +384,7 @@ const Messaging = (() => {
                 .upsert({
                     admin_id: _profilo.id,
                     user_id: _conversazioneAperta.userId,
-                    closed: false
+                    closed: true
                 }, { onConflict: 'admin_id,user_id' })
                 .select('id')
                 .single();
@@ -468,6 +472,60 @@ const Messaging = (() => {
     }
 
     // ==========================================
+    // BROADCAST
+    // ==========================================
+
+    async function _inviaBroadcast() {
+        const input = document.getElementById('msg-broadcast-input');
+        const btn = document.getElementById('msg-btn-broadcast');
+        const testo = input.value.trim();
+        if (!testo || !_isAdmin) return;
+
+        if (_utentiApprovati.length === 0) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Invio in corso...';
+
+        let errori = 0;
+        for (const utente of _utentiApprovati) {
+            // Crea conversazione chiusa solo se non esiste, non tocca quelle esistenti
+            await _supabase
+                .from('conversations')
+                .upsert({
+                    admin_id: _profilo.id,
+                    user_id: utente.id,
+                    closed: true
+                }, { onConflict: 'admin_id,user_id', ignoreDuplicates: true });
+
+            // Invia messaggio
+            const { error } = await _supabase
+                .from('messages')
+                .insert({
+                    sender_id: _profilo.id,
+                    receiver_id: utente.id,
+                    content: '[Tutti] ' + testo
+                });
+
+            if (error) {
+                console.error('Errore broadcast a ' + utente.alias + ':', error);
+                errori++;
+            }
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Invia a tutti';
+
+        if (errori === 0) {
+            input.value = '';
+            btn.textContent = 'Inviato!';
+            setTimeout(() => { btn.textContent = 'Invia a tutti'; }, 2000);
+        } else {
+            btn.textContent = 'Errore (' + errori + ' falliti)';
+            setTimeout(() => { btn.textContent = 'Invia a tutti'; }, 3000);
+        }
+    }
+
+    // ==========================================
     // EVENTI
     // ==========================================
 
@@ -479,6 +537,7 @@ const Messaging = (() => {
         document.getElementById('msg-btn-chiudi-conv').addEventListener('click', _toggleChiudiConversazione);
 
         document.getElementById('msg-btn-invia').addEventListener('click', _inviaMessaggio);
+        document.getElementById('msg-btn-broadcast').addEventListener('click', _inviaBroadcast);
         document.getElementById('msg-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
