@@ -56,14 +56,19 @@
                 </button>
             </div>
             <div class="header-toggles">
-                <button type="button" class="geo-toggle" id="geo-toggle" aria-label="Attiva promemoria posizione" aria-pressed="false" title="Attiva promemoria posizione">
-                    <span class="geo-icon" id="geo-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Promemoria posizione</span>
+                <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Menu" aria-expanded="false" title="Menu">
+                    <span class="hamburger-icon" aria-hidden="true"></span>
                 </button>
-                <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambia tema" title="Cambia tema">
-                    <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Cambia tema</span>
-                </button>
+                <div class="hamburger-menu hidden" id="hamburger-menu">
+                    <button type="button" class="hamburger-item" id="theme-toggle" aria-label="Cambia tema">
+                        <span class="theme-icon" id="theme-icon" aria-hidden="true"></span>
+                        <span>Tema</span>
+                    </button>
+                    <button type="button" class="hamburger-item" id="geo-toggle" aria-label="Attiva promemoria posizione" aria-pressed="false">
+                        <span class="geo-icon" id="geo-icon" aria-hidden="true"></span>
+                        <span>Posizione</span>
+                    </button>
+                </div>
             </div>
         </header>
 

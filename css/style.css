@@ -883,31 +883,6 @@ footer {
     gap: 0.4rem;
 }
 
-.geo-toggle,
-.theme-toggle {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 0.4rem 0.6rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.geo-toggle:hover,
-.theme-toggle:hover {
-    background-color: var(--surface-color);
-    border-color: var(--secondary-color);
-}
-
-.geo-toggle.geo-active {
-    border-color: var(--success-color);
-    background-color: rgba(39, 174, 96, 0.1);
-}
 
 .geo-icon::before {
     content: '\1F4CD';
@@ -938,6 +913,94 @@ footer {
     0% { transform: rotate(0deg) scale(1); }
     50% { transform: rotate(180deg) scale(1.2); }
     100% { transform: rotate(360deg) scale(1); }
+}
+
+/* === HAMBURGER MENU === */
+
+.hamburger-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.hamburger-btn:hover {
+    background-color: var(--surface-color);
+    border-color: var(--secondary-color);
+}
+
+.hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: var(--text-color);
+    border-radius: 1px;
+}
+
+.hamburger-icon::before {
+    box-shadow: 0 6px 0 var(--text-color);
+}
+
+.hamburger-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 100;
+    padding: 0.4rem 0;
+}
+
+.hamburger-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: background-color 0.15s;
+    text-align: left;
+}
+
+.hamburger-item:hover {
+    background-color: var(--surface-color);
+}
+
+.hamburger-item .geo-icon::before {
+    font-size: 1.1rem;
+}
+
+.hamburger-item .theme-icon {
+    font-size: 1.1rem;
+}
+
+.hamburger-item.geo-active {
+    color: var(--success-color);
 }
 
 /* Preferenze utente per movimento ridotto - WCAG 2.3.3 */

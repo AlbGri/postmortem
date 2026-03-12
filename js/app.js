@@ -602,13 +602,29 @@ const App = (() => {
             });
         });
 
+        // Hamburger menu
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        if (hamburgerBtn && hamburgerMenu) {
+            hamburgerBtn.addEventListener('click', () => {
+                const aperto = !hamburgerMenu.classList.contains('hidden');
+                hamburgerMenu.classList.toggle('hidden');
+                hamburgerBtn.setAttribute('aria-expanded', String(!aperto));
+            });
+            document.addEventListener('click', (e) => {
+                if (!hamburgerBtn.contains(e.target) && !hamburgerMenu.contains(e.target)) {
+                    hamburgerMenu.classList.add('hidden');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
         const geoBtn = document.getElementById('geo-toggle');
         if (geoBtn) {
             if (Geofencing.isEnabled()) {
                 geoBtn.classList.add('geo-active');
                 geoBtn.setAttribute('aria-label', 'Disattiva promemoria posizione');
                 geoBtn.setAttribute('aria-pressed', 'true');
-                geoBtn.title = 'Disattiva promemoria posizione';
             }
             geoBtn.addEventListener('click', () => Geofencing.toggle());
         }
