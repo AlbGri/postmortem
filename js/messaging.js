@@ -44,6 +44,7 @@ const Messaging = (() => {
                 schema: 'public',
                 table: 'messages'
             }, (payload) => {
+                console.log('Realtime msg event:', payload);
                 const msg = payload.new;
                 if (msg.receiver_id === _profilo.id) {
                     aggiornaContatore();
@@ -73,7 +74,9 @@ const Messaging = (() => {
                     }
                 }
             })
-            .subscribe();
+            .subscribe((status, err) => {
+                console.log('Realtime subscription:', status, err || '');
+            });
     }
 
     // ==========================================
