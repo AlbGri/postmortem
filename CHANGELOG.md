@@ -6,6 +6,12 @@
 
 ---
 
+## [2.3.0] - 2026-03-12
+
+- Menu hamburger nell'header: theme toggle e geofencing toggle raggruppati in un dropdown
+- Icona messaggio ridisegnata in CSS puro per visibilita' in dark mode
+- Fix: emoji icone con variation selector per rendering monocromatico cross-platform
+
 ## [2.2.0] - 2026-03-10
 
 - Messaggistica admin-utente con gestione conversazioni
