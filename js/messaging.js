@@ -4,79 +4,106 @@
  * - Admin: vede lista utenti approvati, puo' iniziare conversazioni
  * - Utente: vede solo la chat con admin (se esiste), puo' solo rispondere
  * - Admin puo' chiudere/riaprire conversazioni
- * - Real-time via Supabase subscriptions
+ * - Polling per aggiornamenti (ogni 5s chat aperta, ogni 30s contatore)
  */
 const Messaging = (() => {
     let _supabase = null;
     let _profilo = null;
     let _isAdmin = false;
-    let _subscription = null;
     let _conversazioneAperta = null; // { userId, alias, closed, conversationId }
     let _utentiApprovati = []; // solo per admin
+    let _pollChatTimer = null;
+    let _pollContatoreTimer = null;
 
     function init(supabaseClient, profilo) {
         _supabase = supabaseClient;
         _profilo = profilo;
         _isAdmin = profilo.role === 'admin';
         _agganciaEventi();
-        _avviaRealtime();
         aggiornaContatore();
+        _avviaPollingContatore();
     }
 
     function destroy() {
-        if (_subscription) {
-            _supabase.removeChannel(_subscription);
-            _subscription = null;
-        }
+        _fermaPollingChat();
+        _fermaPollingContatore();
         _conversazioneAperta = null;
         _profilo = null;
     }
 
     // ==========================================
-    // REAL-TIME
+    // POLLING
     // ==========================================
 
-    function _avviaRealtime() {
-        _subscription = _supabase
-            .channel('messages-realtime')
-            .on('postgres_changes', {
-                event: 'INSERT',
-                schema: 'public',
-                table: 'messages'
-            }, (payload) => {
-                console.log('Realtime msg event:', payload);
-                const msg = payload.new;
-                if (msg.receiver_id === _profilo.id) {
-                    aggiornaContatore();
-                    if (_conversazioneAperta && msg.sender_id === _conversazioneAperta.userId) {
-                        _appendMessaggio(msg);
-                        _segnaComeLetto(msg.id);
-                    }
+    function _avviaPollingContatore() {
+        _fermaPollingContatore();
+        _pollContatoreTimer = setInterval(aggiornaContatore, 30000);
+    }
+
+    function _fermaPollingContatore() {
+        if (_pollContatoreTimer) {
+            clearInterval(_pollContatoreTimer);
+            _pollContatoreTimer = null;
+        }
+    }
+
+    function _avviaPollingChat() {
+        _fermaPollingChat();
+        _pollChatTimer = setInterval(_pollNuoviMessaggi, 5000);
+    }
+
+    function _fermaPollingChat() {
+        if (_pollChatTimer) {
+            clearInterval(_pollChatTimer);
+            _pollChatTimer = null;
+        }
+    }
+
+    async function _pollNuoviMessaggi() {
+        if (!_conversazioneAperta) return;
+
+        const userId = _conversazioneAperta.userId;
+        const container = document.getElementById('msg-chat-messaggi');
+        const ultimoMsg = container.querySelector('[data-msg-id]:last-child');
+        const ultimoId = ultimoMsg ? ultimoMsg.getAttribute('data-msg-id') : null;
+
+        // Cerca messaggi piu' recenti dell'ultimo visualizzato
+        let query = _supabase
+            .from('messages')
+            .select('*')
+            .or(
+                'and(sender_id.eq.' + _profilo.id + ',receiver_id.eq.' + userId + '),' +
+                'and(sender_id.eq.' + userId + ',receiver_id.eq.' + _profilo.id + ')'
+            )
+            .order('created_at', { ascending: true });
+
+        if (ultimoId) {
+            // Prendi solo messaggi con created_at > ultimo messaggio visualizzato
+            const ultimoEl = container.querySelector('[data-msg-id="' + ultimoId + '"]');
+            if (ultimoEl) {
+                const { data: ultimoData } = await _supabase
+                    .from('messages')
+                    .select('created_at')
+                    .eq('id', ultimoId)
+                    .single();
+
+                if (ultimoData) {
+                    query = query.gt('created_at', ultimoData.created_at);
                 }
-                if (msg.sender_id === _profilo.id && _conversazioneAperta) {
-                    _appendMessaggio(msg);
-                }
-            })
-            .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'conversations'
-            }, (payload) => {
-                // Aggiorna stato chiuso/aperto se la conversazione aperta e' stata modificata
-                const conv = payload.new;
-                if (_conversazioneAperta && conv) {
-                    const isMyConv = (conv.admin_id === _profilo.id && conv.user_id === _conversazioneAperta.userId) ||
-                                     (conv.user_id === _profilo.id && conv.admin_id === _conversazioneAperta.userId);
-                    if (isMyConv) {
-                        _conversazioneAperta.closed = conv.closed;
-                        _conversazioneAperta.conversationId = conv.id;
-                        _aggiornaStatoChat();
-                    }
-                }
-            })
-            .subscribe((status, err) => {
-                console.log('Realtime subscription:', status, err || '');
-            });
+            }
+        }
+
+        const { data: nuovi, error } = await query;
+        if (error || !nuovi || nuovi.length === 0) return;
+
+        for (const msg of nuovi) {
+            _appendMessaggio(msg);
+            if (msg.receiver_id === _profilo.id && !msg.read) {
+                _segnaComeLetto(msg.id);
+            }
+        }
+
+        aggiornaContatore();
     }
 
     // ==========================================
@@ -84,6 +111,8 @@ const Messaging = (() => {
     // ==========================================
 
     async function aggiornaContatore() {
+        if (!_supabase || !_profilo) return;
+
         const { count, error } = await _supabase
             .from('messages')
             .select('*', { count: 'exact', head: true })
@@ -121,6 +150,7 @@ const Messaging = (() => {
 
     function _chiudiPannello() {
         document.getElementById('modal-messaggi').classList.add('hidden');
+        _fermaPollingChat();
         _conversazioneAperta = null;
         aggiornaContatore();
     }
@@ -130,6 +160,9 @@ const Messaging = (() => {
     // ==========================================
 
     async function _mostraListaUtenti() {
+        _fermaPollingChat();
+        _conversazioneAperta = null;
+
         const listaView = document.getElementById('msg-lista-view');
         const chatView = document.getElementById('msg-chat-view');
         listaView.classList.remove('hidden');
@@ -283,6 +316,8 @@ const Messaging = (() => {
         if (!_conversazioneAperta.closed || _isAdmin) {
             document.getElementById('msg-input').focus();
         }
+
+        _avviaPollingChat();
     }
 
     /**
@@ -357,17 +392,25 @@ const Messaging = (() => {
             }
         }
 
-        const { error } = await _supabase
+        const { data: msgInserito, error } = await _supabase
             .from('messages')
             .insert({
                 sender_id: _profilo.id,
                 receiver_id: _conversazioneAperta.userId,
                 content: testo
-            });
+            })
+            .select()
+            .single();
 
         if (error) {
             console.error('Errore invio messaggio:', error);
             input.value = testo;
+            return;
+        }
+
+        // Mostra subito il messaggio inviato senza aspettare il polling
+        if (msgInserito) {
+            _appendMessaggio(msgInserito);
         }
     }
 
