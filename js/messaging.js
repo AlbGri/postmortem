@@ -279,7 +279,7 @@ const Messaging = (() => {
             .select('id, closed')
             .eq('admin_id', adminId)
             .eq('user_id', targetUserId)
-            .single();
+            .maybeSingle();
 
         if (conv) {
             _conversazioneAperta.closed = conv.closed;
