@@ -1,8 +1,11 @@
 # Changelog
 
-## [Prossimamente]
+## [2.4.0] - 2026-03-13
 
-- Sync offline: coda locale, sincronizzazione automatica al ritorno della connessione
+- Coda operazioni offline: le scritture fallite vengono salvate e ritentate automaticamente
+- Sync login con confronto campo per campo: modale dettagliata per risolvere differenze tra dati locali e cloud
+- Protezione cancellazioni offline: i giorni cancellati senza rete non tornano dal cloud al login successivo
+- Indicatore visuale nell'header quando ci sono operazioni in attesa di sincronizzazione
 
 ---
 

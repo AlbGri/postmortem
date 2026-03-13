@@ -49,6 +49,7 @@
             </div>
             <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
             <div class="header-toggles-left">
+                <span class="sync-pending hidden" id="sync-pending" aria-label="Operazioni in attesa di sincronizzazione" title="Sync in attesa">&#x21BB;</span>
                 <button type="button" class="msg-toggle hidden" id="msg-toggle" aria-label="Messaggi" title="Messaggi">
                     <span class="msg-icon" aria-hidden="true"></span>
                     <span class="msg-badge hidden" id="msg-badge">0</span>
@@ -136,6 +137,23 @@
                         <button id="btn-sync-carica" class="btn-auth">Carica nel cloud</button>
                         <button id="btn-sync-elimina" class="btn-auth btn-auth-secondary">Elimina</button>
                         <button id="btn-sync-annulla" class="btn-auth btn-auth-secondary">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CONFLITTI SYNC (differenze campo per campo) -->
+        <div id="modal-conflitti" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop"></div>
+            <div class="auth-overlay-content">
+                <div class="auth-form">
+                    <h2>Dati diversi trovati</h2>
+                    <p class="sync-msg" id="conflitti-msg"></p>
+                    <div id="conflitti-lista" class="conflitti-lista"></div>
+                    <div class="sync-actions">
+                        <button id="btn-conflitti-locale" class="btn-auth">Tieni locale</button>
+                        <button id="btn-conflitti-cloud" class="btn-auth btn-auth-secondary">Tieni cloud</button>
+                        <button id="btn-conflitti-annulla" class="btn-auth btn-auth-secondary">Annulla</button>
                     </div>
                 </div>
             </div>
@@ -289,7 +307,7 @@
                     <a href="https://revolut.me/albert9u1r" target="_blank" rel="noopener">Revolut</a>
                 </span>
             </p>
-            <p>Orari Ufficio - PWA v2.3.0</p>
+            <p>Orari Ufficio - PWA v2.4.0</p>
         </footer>
     </div>
 
@@ -304,6 +322,7 @@
     <script src="./js/notifications.js"></script>
     <script src="./js/auth.js"></script>
     <script src="./js/api.js"></script>
+    <script src="./js/sync-queue.js"></script>
     <script src="./js/messaging.js"></script>
     <script src="./js/app.js"></script>
 </body>

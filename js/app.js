@@ -73,6 +73,7 @@ const App = (() => {
         _agganciaEventiApp();
         Notifier.init();
         Geofencing.init();
+        SyncQueue.aggiornaIndicatore();
     }
 
     /**
@@ -111,20 +112,32 @@ const App = (() => {
     }
 
     /**
-     * Scarica tutti i dati dell'utente da Supabase
-     * e li mette in localStorage (sovrascrive)
-     */
-    /**
+     * Sincronizza dati locali con Supabase al login.
+     * 1. Processa la coda di operazioni pendenti
+     * 2. Scarica dati remoti
+     * 3. Esclude giorni cancellati offline
+     * 4. Gestisce giorni solo locali (modale esistente)
+     * 5. Gestisce conflitti campo per campo (modale nuova)
+     *
      * @returns {boolean} true se sincronizzazione completata, false se annullata
      */
     async function _sincronizzaDaSupabase() {
+        // Ritenta operazioni pendenti prima di sincronizzare
+        await SyncQueue.processa();
+
         const datiRemoti = await Api.caricaTuttiDati();
         if (!datiRemoti) return true;
+
+        // Escludi dal cloud i giorni cancellati offline (rimasti in coda)
+        const cancellazioniPendenti = SyncQueue.getCancellazioniPendenti();
+        for (const dataISO of cancellazioniPendenti) {
+            delete datiRemoti[dataISO];
+        }
 
         const datiLocali = Storage.caricaTutti();
         const chiaveRemote = new Set(Object.keys(datiRemoti));
 
-        // Trova giorni presenti solo in locale (non nel cloud)
+        // Giorni presenti solo in locale
         const giorniSoloLocali = {};
         for (const dataISO in datiLocali) {
             if (!chiaveRemote.has(dataISO)) {
@@ -132,25 +145,58 @@ const App = (() => {
             }
         }
 
+        // Giorni in comune con differenze campo per campo
+        const giorniInConflitto = {};
+        for (const dataISO in datiLocali) {
+            if (!chiaveRemote.has(dataISO)) continue;
+            const loc = datiLocali[dataISO];
+            const rem = datiRemoti[dataISO];
+            if (loc.entrata !== rem.entrata ||
+                loc.uscitaPranzo !== rem.uscitaPranzo ||
+                loc.entrataPranzo !== rem.entrataPranzo ||
+                loc.uscitaEffettiva !== rem.uscitaEffettiva) {
+                giorniInConflitto[dataISO] = { locale: loc, remoto: rem };
+            }
+        }
+
+        // Fase 1: giorni solo locali (modale esistente)
         const numSoloLocali = Object.keys(giorniSoloLocali).length;
         if (numSoloLocali > 0) {
             const scelta = await _mostraModalSync(numSoloLocali);
             if (scelta === 'annulla') {
-                // Ripristina i dati locali originali e annulla il login
                 Storage.sostituisciTutti(datiLocali);
                 return false;
             }
-            // Supabase è fonte di verità: sostituisci tutto localStorage
+            // Cloud come base
             Storage.sostituisciTutti(datiRemoti);
             if (scelta === 'carica') {
                 await Api.importaDati(giorniSoloLocali);
                 Storage.importaDati(giorniSoloLocali);
             }
-            // 'elimina': localStorage ha già solo i dati remoti
         } else {
-            // Nessun conflitto: sostituisci direttamente
             Storage.sostituisciTutti(datiRemoti);
         }
+
+        // Fase 2: conflitti campo per campo
+        const numConflitti = Object.keys(giorniInConflitto).length;
+        if (numConflitti > 0) {
+            const scelta = await _mostraModalConflitti(giorniInConflitto);
+            if (scelta === 'annulla') {
+                Storage.sostituisciTutti(datiLocali);
+                return false;
+            }
+            if (scelta === 'locale') {
+                // Sovrascrivi cloud con i valori locali per i giorni in conflitto
+                const datiLocaliConflitto = {};
+                for (const dataISO in giorniInConflitto) {
+                    datiLocaliConflitto[dataISO] = giorniInConflitto[dataISO].locale;
+                }
+                await Api.importaDati(datiLocaliConflitto);
+                Storage.importaDati(datiLocaliConflitto);
+            }
+            // 'cloud': localStorage ha gia' i dati remoti dalla fase 1
+        }
+
         return true;
     }
 
@@ -180,6 +226,79 @@ const App = (() => {
             document.getElementById('btn-sync-carica').addEventListener('click', onCarica);
             document.getElementById('btn-sync-elimina').addEventListener('click', onElimina);
             document.getElementById('btn-sync-annulla').addEventListener('click', onAnnulla);
+        });
+    }
+
+    /**
+     * Mostra il modale con i giorni in conflitto (differenze campo per campo)
+     * @param {Object} conflitti - { "2026-03-10": { locale: {...}, remoto: {...} }, ... }
+     * @returns {Promise<'locale'|'cloud'|'annulla'>}
+     */
+    function _mostraModalConflitti(conflitti) {
+        const NOMI_CAMPI = {
+            entrata: 'Entrata',
+            uscitaPranzo: 'Uscita pranzo',
+            entrataPranzo: 'Rientro pranzo',
+            uscitaEffettiva: 'Uscita'
+        };
+
+        return new Promise((resolve) => {
+            const modal = document.getElementById('modal-conflitti');
+            const msg = document.getElementById('conflitti-msg');
+            const lista = document.getElementById('conflitti-lista');
+            const numConf = Object.keys(conflitti).length;
+
+            msg.textContent = numConf + ' giorn' + (numConf === 1 ? 'o ha' : 'i hanno') +
+                ' valori diversi tra locale e cloud.';
+
+            lista.textContent = '';
+            const dateOrdinate = Object.keys(conflitti).sort();
+            for (const dataISO of dateOrdinate) {
+                const conf = conflitti[dataISO];
+                const div = document.createElement('div');
+                div.className = 'conflitto-giorno';
+
+                const d = new Date(dataISO + 'T00:00:00');
+                const titolo = document.createElement('div');
+                titolo.className = 'conflitto-giorno-titolo';
+                titolo.textContent = GIORNI_IT[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1);
+                div.appendChild(titolo);
+
+                for (const campo of ['entrata', 'uscitaPranzo', 'entrataPranzo', 'uscitaEffettiva']) {
+                    if (conf.locale[campo] === conf.remoto[campo]) continue;
+                    const riga = document.createElement('div');
+                    riga.className = 'conflitto-campo';
+                    const nome = document.createElement('span');
+                    nome.className = 'conflitto-campo-nome';
+                    nome.textContent = NOMI_CAMPI[campo] + ':';
+                    const valori = document.createElement('span');
+                    valori.className = 'conflitto-valori';
+                    valori.textContent = (conf.locale[campo] || '--:--') + ' (locale) / ' +
+                        (conf.remoto[campo] || '--:--') + ' (cloud)';
+                    riga.appendChild(nome);
+                    riga.appendChild(valori);
+                    div.appendChild(riga);
+                }
+
+                lista.appendChild(div);
+            }
+
+            modal.classList.remove('hidden');
+
+            function chiudi(scelta) {
+                modal.classList.add('hidden');
+                document.getElementById('btn-conflitti-locale').removeEventListener('click', onLocale);
+                document.getElementById('btn-conflitti-cloud').removeEventListener('click', onCloud);
+                document.getElementById('btn-conflitti-annulla').removeEventListener('click', onAnnulla);
+                resolve(scelta);
+            }
+            function onLocale() { chiudi('locale'); }
+            function onCloud() { chiudi('cloud'); }
+            function onAnnulla() { chiudi('annulla'); }
+
+            document.getElementById('btn-conflitti-locale').addEventListener('click', onLocale);
+            document.getElementById('btn-conflitti-cloud').addEventListener('click', onCloud);
+            document.getElementById('btn-conflitti-annulla').addEventListener('click', onAnnulla);
         });
     }
 
@@ -346,6 +465,7 @@ const App = (() => {
         }
         if (_isLoggedIn) {
             Storage.cancellaTutti();
+            SyncQueue.svuota();
             Messaging.destroy();
             document.getElementById('msg-toggle').classList.add('hidden');
         }
@@ -413,10 +533,12 @@ const App = (() => {
         // 1. Salva in localStorage (immediato, sincrono)
         Storage.salvaGiorno(dataCorrente, dati);
 
-        // 2. Salva su Supabase (asincrono, in background, non bloccante)
-        //    Se fallisce, i dati restano in localStorage
+        // 2. Salva su Supabase (asincrono, in background)
+        //    Se fallisce, accoda per retry successivo
         if (_isLoggedIn) {
-            Api.salvaGiorno(dataCorrente, dati);
+            Api.salvaGiorno(dataCorrente, dati).then(ok => {
+                if (!ok) SyncQueue.accoda('save', dataCorrente, dati);
+            });
         }
 
         aggiornaCalcoli();
@@ -596,7 +718,13 @@ const App = (() => {
         document.getElementById('btn-importa-csv').addEventListener('click', () => {
             CsvManager.importa((datiImportati) => {
                 if (_isLoggedIn && datiImportati) {
-                    Api.importaDati(datiImportati);
+                    Api.importaDati(datiImportati).then(ok => {
+                        if (!ok) {
+                            for (const dataISO in datiImportati) {
+                                SyncQueue.accoda('save', dataISO, datiImportati[dataISO]);
+                            }
+                        }
+                    });
                 }
                 caricaGiorno(dataCorrente);
             });
@@ -651,7 +779,9 @@ const App = (() => {
         if (confirm('Vuoi davvero cancellare i dati di ' + label + '?')) {
             Storage.cancellaGiorno(dataCorrente);
             if (_isLoggedIn) {
-                Api.cancellaGiorno(dataCorrente);
+                Api.cancellaGiorno(dataCorrente).then(ok => {
+                    if (!ok) SyncQueue.accoda('delete', dataCorrente, null);
+                });
             }
             Notifier.cancelReminder();
             const details = document.getElementById('pranzo-details');
@@ -671,7 +801,9 @@ const App = (() => {
             for (const g of giorniSettimana) {
                 Storage.cancellaGiorno(g.data);
                 if (_isLoggedIn) {
-                    Api.cancellaGiorno(g.data);
+                    Api.cancellaGiorno(g.data).then(ok => {
+                        if (!ok) SyncQueue.accoda('delete', g.data, null);
+                    });
                 }
             }
             caricaGiorno(dataCorrente);
@@ -688,7 +820,9 @@ const App = (() => {
             for (const dataISO in datiMese) {
                 Storage.cancellaGiorno(dataISO);
                 if (_isLoggedIn) {
-                    Api.cancellaGiorno(dataISO);
+                    Api.cancellaGiorno(dataISO).then(ok => {
+                        if (!ok) SyncQueue.accoda('delete', dataISO, null);
+                    });
                 }
             }
             caricaGiorno(dataCorrente);

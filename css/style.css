@@ -13,6 +13,7 @@
     --border-color: #bdc3c7;
     --success-color: #27ae60;
     --danger-color: #e74c3c;
+    --warning-color: #e67e22;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     --text-muted: #4a4a4a;
     --text-lighter: #5a5a5a;
@@ -820,6 +821,60 @@ footer {
     gap: 0.5rem;
 }
 
+/* Lista conflitti sync */
+.conflitti-lista {
+    max-height: 40vh;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.conflitto-giorno {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    background: var(--surface-color);
+}
+
+.conflitto-giorno-titolo {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.conflitto-campo {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.15rem 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.conflitto-campo-nome {
+    flex-shrink: 0;
+}
+
+.conflitto-valori {
+    text-align: right;
+}
+
+/* Indicatore sync pendente */
+.sync-pending {
+    font-size: 1.1rem;
+    color: var(--warning-color);
+    animation: sync-spin 2s linear infinite;
+    cursor: default;
+    line-height: 1;
+}
+
+@keyframes sync-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .label-opzionale {
     font-weight: 400;
     font-size: 0.8rem;
@@ -1055,6 +1110,7 @@ footer {
         --border-color: #404040;
         --success-color: #66bb6a;
         --danger-color: #ff6b6b;
+        --warning-color: #f0a050;
         --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         --text-muted: #b0b0b0;
         --text-lighter: #999999;
@@ -1074,6 +1130,7 @@ footer {
     --border-color: #404040;
     --success-color: #66bb6a;
     --danger-color: #ff6b6b;
+    --warning-color: #f0a050;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     --text-muted: #b0b0b0;
     --text-lighter: #999999;
