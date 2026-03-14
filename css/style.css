@@ -1,3 +1,60 @@
+/* FONT POSTMORTEM */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../fonts/Montserrat-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../fonts/Montserrat-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* === SPLASH SCREEN === */
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #f6eb61;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+#splash-screen .splash-icon {
+    width: 160px;
+    height: 160px;
+    border-radius: 24px;
+}
+#splash-screen .splash-title {
+    margin-top: 16px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 28px;
+    color: #2c3e50;
+    letter-spacing: 1px;
+}
+#splash-screen .splash-title .brand-bold {
+    font-weight: 700;
+}
+#splash-screen .splash-title .brand-light {
+    font-weight: 400;
+}
+#splash-screen .splash-subtitle {
+    margin-top: 2px;
+    font-size: 14px;
+    color: #4a5568;
+    letter-spacing: 0.5px;
+}
+#splash-screen.splash-fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -44,14 +101,18 @@ header {
 }
 
 header h1 {
+    font-family: 'Montserrat', Arial, sans-serif;
     font-size: 2rem;
     color: var(--primary-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.15rem;
 }
+.brand-bold { font-weight: 700; }
+.brand-light { font-weight: 400; }
 
 .subtitle {
     color: var(--text-muted);
     font-size: 0.95rem;
+    margin-bottom: 0.5rem;
 }
 
 main {
@@ -615,6 +676,13 @@ footer {
 
 .footer-support a:hover {
     text-decoration: underline;
+}
+
+.footer-disclaimer {
+    font-size: 0.7rem;
+    color: var(--text-lighter);
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
 }
 
 /* === AUTH OVERLAY (MODAL) === */

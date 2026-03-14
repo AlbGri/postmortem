@@ -32,16 +32,21 @@
 
     <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
     <meta name="theme-color" content="#2c3e50">
-    <title>Orari Ufficio</title>
+    <title>Postmortem</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./css/style.css">
     <script src="./js/source-protection-silent.js"></script>
 </head>
 <body>
+    <div id="splash-screen">
+        <img src="./icons/icon-512.png" alt="Postmortem" class="splash-icon">
+        <span class="splash-title"><span class="brand-bold">Post</span><span class="brand-light">mortem</span></span>
+        <span class="splash-subtitle">Gestione orari settimanali</span>
+    </div>
     <div class="container">
         <header>
-            <h1>Orari Ufficio</h1>
+            <h1><span class="brand-bold">Post</span><span class="brand-light">mortem</span></h1>
             <p class="subtitle" id="app-subtitle">Gestione orari settimanali</p>
             <div class="user-bar hidden" id="user-bar">
                 <span id="user-alias-display"></span>
@@ -307,11 +312,13 @@
                     <a href="https://revolut.me/albert9u1r" target="_blank" rel="noopener">Revolut</a>
                 </span>
             </p>
-            <p>Orari Ufficio - PWA v2.4.0</p>
+            <p class="footer-disclaimer">App non ufficiale, non affiliata ad alcuna azienda.</p>
+            <p>Postmortem - PWA v2.4.0</p>
         </footer>
     </div>
 
     <script src="./js/supabase.min.js"></script>
+    <script src="./js/splash.js"></script>
     <script src="./js/supabase-config.js"></script>
     <script src="./js/theme-switcher.js"></script>
     <script src="./js/calculator.js"></script>

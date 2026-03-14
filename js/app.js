@@ -96,7 +96,6 @@ const App = (() => {
 
         // Aggiorna header: nasconde "Accedi", mostra user-bar
         document.getElementById('btn-accedi').classList.add('hidden');
-        document.getElementById('app-subtitle').classList.add('hidden');
         document.getElementById('user-bar').classList.remove('hidden');
         document.getElementById('user-alias-display').textContent = profilo.alias;
 
@@ -305,7 +304,6 @@ const App = (() => {
     function _mostraLogin() {
         _isLoggedIn = false;
         document.getElementById('btn-accedi').classList.remove('hidden');
-        document.getElementById('app-subtitle').classList.remove('hidden');
         document.getElementById('user-bar').classList.add('hidden');
     }
 

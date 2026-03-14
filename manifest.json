@@ -1,6 +1,6 @@
 {
-    "name": "Orari Ufficio",
-    "short_name": "Orari",
+    "name": "Postmortem",
+    "short_name": "Postmortem",
     "description": "Gestione orari di ingresso e uscita per i giorni di ufficio",
     "start_url": "./",
     "display": "standalone",

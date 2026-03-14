@@ -216,7 +216,7 @@ const Geofencing = (() => {
         if (!navigator.serviceWorker) return;
 
         navigator.serviceWorker.ready.then(function (reg) {
-            reg.showNotification('Orari Ufficio', {
+            reg.showNotification('Postmortem', {
                 body: 'Sei in ufficio! Ricordati di inserire l\'orario di entrata.',
                 icon: './favicon.png'
             });

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.0] - 2026-03-14
+
+- Rebranding: "Orari Ufficio" rinominato in "Postmortem" (manifest, title, header, footer, notifiche)
+- Splash screen con icona e titolo su sfondo giallo, dissolvenza automatica dopo 1.5s
+- Font Montserrat per il titolo: "Post" bold + "mortem" regular
+- Disclaimer nel footer: app non ufficiale
+- Sottotitolo "Gestione orari settimanali" sempre visibile (anche dopo login)
+- Service worker: aggiunti file mancanti alla cache (splash, sync-queue, font, icone)
+
+---
+
 ## [2.4.0] - 2026-03-13
 
 - Coda operazioni offline: le scritture fallite vengono salvate e ritentate automaticamente
