@@ -1,4 +1,4 @@
-const CACHE_NAME = 'orari-ufficio-v21';
+const CACHE_NAME = 'orari-ufficio-v22';
 const urlsToCache = [
     './',
     './index.html',
@@ -18,7 +18,9 @@ const urlsToCache = [
     './js/sync-queue.js',
     './js/messaging.js',
     './js/memory.js',
+    './js/changelog.js',
     './js/splash.js',
+    './CHANGELOG.md',
     './fonts/Montserrat-Regular.woff2',
     './fonts/Montserrat-Bold.woff2',
     './icons/icon-192.png',

@@ -78,6 +78,10 @@
                         <span class="memory-menu-icon" aria-hidden="true">&#x1F9E9;</span>
                         <span>Memory</span>
                     </button>
+                    <button type="button" class="hamburger-item" id="changelog-toggle" aria-label="Novità">
+                        <span aria-hidden="true">&#x1F4CB;</span>
+                        <span>Novità</span>
+                    </button>
                 </div>
             </div>
         </header>
@@ -346,6 +350,18 @@
             </div>
         </div>
 
+        <!-- MODAL CHANGELOG -->
+        <div id="schermata-changelog" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop" id="changelog-backdrop"></div>
+            <div class="auth-overlay-content changelog-overlay-content">
+                <button class="auth-overlay-close" id="btn-chiudi-changelog" aria-label="Chiudi">&times;</button>
+                <div class="auth-form">
+                    <h2>Novità</h2>
+                    <div id="changelog-contenuto" class="changelog-body"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="install-banner hidden" id="install-banner">
             <span>Installa l'app sul tuo dispositivo</span>
             <button id="install-btn" class="btn-install">Installa</button>
@@ -363,10 +379,11 @@
                 </span>
             </p>
             <p class="footer-disclaimer">App non ufficiale, non affiliata ad alcuna azienda.</p>
-            <p>Postmortem - PWA v2.5.0</p>
+            <p>Postmortem - PWA v2.6.0</p>
         </footer>
     </div>
 
+    <script src="./js/changelog.js"></script>
     <script src="./js/supabase.min.js"></script>
     <script src="./js/splash.js"></script>
     <script src="./js/supabase-config.js"></script>

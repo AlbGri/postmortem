@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.0] - 2026-03-14
+
+- Gioco Memory 6x6 (18 coppie emoji fantasy) accessibile solo agli utenti autenticati
+- Classifica top 10 globale per miglior tempo, con numero partite giocate
+- Record personale mostrato dopo ogni partita
+- Nuova icona app: zombie chibi con clessidra
+
+---
+
 ## [2.5.0] - 2026-03-14
 
 - Rebranding: "Orari Ufficio" rinominato in "Postmortem" (manifest, title, header, footer, notifiche)
@@ -23,7 +32,7 @@
 ## [2.3.0] - 2026-03-12
 
 - Menu hamburger nell'header: theme toggle e geofencing toggle raggruppati in un dropdown
-- Icona messaggio ridisegnata in CSS puro per visibilita' in dark mode
+- Icona messaggio ridisegnata in CSS puro per visibilità in dark mode
 - Fix: emoji icone con variation selector per rendering monocromatico cross-platform
 
 ## [2.2.0] - 2026-03-10
@@ -56,10 +65,10 @@
 - Export/Import CSV (separatore `;`, UTF-8 BOM per Excel italiano)
 - Notifica promemoria uscita dopo 8h (6h il venerdì) dall'orario di entrata
 - Venerdì rilevato automaticamente dalla data (rimosso checkbox manuale)
-- Minimo settimanale calcolato dai giorni effettivamente compilati (non piu' valore fisso)
+- Minimo settimanale calcolato dai giorni effettivamente compilati (non più valore fisso)
 - Migrazione automatica dal vecchio formato dati
 
-## [1.0.0] - (tag: v1.0-static)
+## [1.0.0] - 2026-02-13
 
 - App statica PWA con 3 giorni fissi settimanali
 - Calcolo in tempo reale: delta giornaliero, delta cumulato, uscita prevista, uscita minima terzo giorno
