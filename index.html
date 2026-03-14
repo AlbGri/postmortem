@@ -56,11 +56,14 @@
         <header>
             <h1><span class="brand-bold">Post</span><span class="brand-light">mortem</span></h1>
             <p class="subtitle" id="app-subtitle">Gestione orari settimanali</p>
-            <div class="user-bar hidden" id="user-bar">
-                <span id="user-alias-display"></span>
-                <button id="btn-logout" class="btn-logout">Esci</button>
+            <div class="header-auth-bar">
+                <div class="user-bar hidden" id="user-bar">
+                    <span id="user-alias-display"></span>
+                    <button id="btn-logout" class="btn-logout">Esci</button>
+                </div>
+                <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
+                <button id="btn-salva-app" class="btn-accedi hidden">Salva App</button>
             </div>
-            <button id="btn-accedi" class="btn-accedi hidden">Accedi</button>
             <div class="header-toggles-left">
                 <span class="sync-pending hidden" id="sync-pending" aria-label="Operazioni in attesa di sincronizzazione" title="Sync in attesa">&#x21BB;</span>
                 <button type="button" class="msg-toggle hidden" id="msg-toggle" aria-label="Messaggi" title="Messaggi">
@@ -370,9 +373,15 @@
             </div>
         </div>
 
-        <div class="install-banner hidden" id="install-banner">
-            <span>Installa l'app sul tuo dispositivo</span>
-            <button id="install-btn" class="btn-install">Installa</button>
+        <div class="auth-overlay hidden" id="install-overlay">
+            <div class="auth-overlay-backdrop" id="install-backdrop"></div>
+            <div class="auth-overlay-content">
+                <button class="auth-overlay-close" id="btn-chiudi-install" aria-label="Chiudi">&times;</button>
+                <div class="auth-form">
+                    <h2>Aggiungi alla Home</h2>
+                    <div id="install-istruzioni" class="install-istruzioni"></div>
+                </div>
+            </div>
         </div>
 
         <footer>

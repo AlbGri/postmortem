@@ -896,31 +896,70 @@ const App = (() => {
     }
 
     function gestisciInstallPrompt() {
-        const banner = document.getElementById('install-banner');
-        const btnInstall = document.getElementById('install-btn');
+        const btnSalva = document.getElementById('btn-salva-app');
+        const overlay = document.getElementById('install-overlay');
+        const backdrop = document.getElementById('install-backdrop');
+        const btnChiudi = document.getElementById('btn-chiudi-install');
+        const istruzioni = document.getElementById('install-istruzioni');
 
+        // In standalone (gia' installata) non mostrare nulla
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+            || navigator.standalone === true;
+        if (isStandalone) return;
+
+        btnSalva.classList.remove('hidden');
+
+        // Intercetta il prompt nativo (Chrome/Edge/Samsung Internet)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (banner) banner.classList.remove('hidden');
         });
 
-        if (btnInstall) {
-            btnInstall.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then(() => {
-                        deferredPrompt = null;
-                        if (banner) banner.classList.add('hidden');
-                    });
-                }
-            });
-        }
+        btnSalva.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                });
+                return;
+            }
+            // Mostra modale con istruzioni manuali
+            istruzioni.innerHTML = _getIstruzioniInstall();
+            overlay.classList.remove('hidden');
+        });
+
+        btnChiudi.addEventListener('click', () => overlay.classList.add('hidden'));
+        backdrop.addEventListener('click', () => overlay.classList.add('hidden'));
 
         window.addEventListener('appinstalled', () => {
-            if (banner) banner.classList.add('hidden');
+            btnSalva.classList.add('hidden');
+            overlay.classList.add('hidden');
             deferredPrompt = null;
         });
+    }
+
+    function _getIstruzioniInstall() {
+        const ua = navigator.userAgent;
+        if (/iPad|iPhone|iPod/.test(ua)) {
+            return '<p>Da <b>Safari</b>:</p>'
+                + '<ol>'
+                + '<li>Tocca l\'icona <b>Condividi</b> (quadrato con freccia in su)</li>'
+                + '<li>Scorri e tocca <b>"Aggiungi a Home"</b></li>'
+                + '<li>Conferma con <b>"Aggiungi"</b></li>'
+                + '</ol>'
+                + '<p style="margin-top:0.8rem;font-size:0.82rem;color:var(--text-muted)">'
+                + 'Nota: funziona solo con Safari, non con altri browser su iOS.</p>';
+        }
+        if (/Android/.test(ua)) {
+            return '<p>Dal menu del browser:</p>'
+                + '<ol>'
+                + '<li>Tocca il menu <b>&#8942;</b> (tre puntini in alto a destra)</li>'
+                + '<li>Tocca <b>"Aggiungi a schermata Home"</b> o <b>"Installa app"</b></li>'
+                + '<li>Conferma</li>'
+                + '</ol>';
+        }
+        return '<p>Dal menu del browser, cerca l\'opzione <b>"Installa"</b> o '
+            + '<b>"Aggiungi a schermata Home"</b>.</p>';
     }
 
     return {

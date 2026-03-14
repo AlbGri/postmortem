@@ -599,32 +599,20 @@ input[type="checkbox"]:focus-visible {
     text-align: right;
 }
 
-.install-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--primary-color);
-    color: var(--color-on-primary);
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px;
-    margin-top: 1.5rem;
-    box-shadow: var(--shadow);
+.install-istruzioni {
+    text-align: left;
     font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-color);
 }
 
-.btn-install {
-    background: var(--color-on-primary);
-    color: var(--primary-color);
-    border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+.install-istruzioni ol {
+    padding-left: 1.2rem;
+    margin: 1rem 0 0;
 }
 
-.btn-install:hover {
-    opacity: 0.9;
+.install-istruzioni li {
+    margin-bottom: 0.5rem;
 }
 
 .footer-dati {
@@ -758,6 +746,13 @@ footer {
 .btn-accedi:hover {
     border-color: var(--secondary-color);
     color: var(--secondary-color);
+}
+
+.header-auth-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
 }
 
 .auth-form {

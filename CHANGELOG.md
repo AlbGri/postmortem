@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2] - 2026-03-14
+
+- Bottone "Salva App" nell'header per aggiungere la PWA alla Home del telefono
+- Istruzioni contestuali per iOS e Android se il browser non supporta l'installazione nativa
+
+---
+
 ## [2.6.1] - 2026-03-14
 
 - Modali navigabili da tastiera e compatibili con screen reader
