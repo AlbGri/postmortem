@@ -74,6 +74,10 @@
                         <span class="geo-icon" id="geo-icon" aria-hidden="true"></span>
                         <span>Posizione</span>
                     </button>
+                    <button type="button" class="hamburger-item hidden" id="memory-toggle" aria-label="Gioco Memory">
+                        <span class="memory-menu-icon" aria-hidden="true">&#x1F9E9;</span>
+                        <span>Memory</span>
+                    </button>
                 </div>
             </div>
         </header>
@@ -296,6 +300,52 @@
             </div>
         </main><!-- /schermata-app -->
 
+        <!-- MODAL MEMORY GAME -->
+        <div id="modal-memory" class="auth-overlay hidden">
+            <div class="auth-overlay-backdrop" id="memory-backdrop"></div>
+            <div class="auth-overlay-content memory-overlay-content">
+                <button class="auth-overlay-close" id="memory-btn-chiudi" aria-label="Chiudi">&times;</button>
+
+                <!-- Schermata inizio -->
+                <div id="memory-inizio" class="auth-form memory-form">
+                    <h2>Memory</h2>
+                    <p class="memory-desc">Trova le 18 coppie di emoji fantasy!</p>
+                    <button id="memory-btn-gioca" class="btn-auth">Gioca</button>
+                    <button id="memory-btn-classifica" class="btn-auth btn-auth-secondary">Classifica</button>
+                    <div id="memory-classifica-inizio" class="memory-classifica-container"></div>
+                </div>
+
+                <!-- Schermata gioco -->
+                <div id="memory-gioco" class="memory-form hidden">
+                    <div class="memory-info-bar">
+                        <span>Tempo: <strong id="memory-timer">00:00</strong></span>
+                        <span>Mosse: <strong id="memory-mosse">0</strong></span>
+                    </div>
+                    <div id="memory-griglia" class="memory-griglia"></div>
+                </div>
+
+                <!-- Schermata fine partita -->
+                <div id="memory-fine" class="auth-form memory-form hidden">
+                    <h2>Complimenti!</h2>
+                    <div class="memory-risultati">
+                        <p>Tempo: <strong id="memory-fine-tempo">--:--</strong></p>
+                        <p>Mosse: <strong id="memory-fine-mosse">0</strong></p>
+                        <p class="memory-record" id="memory-fine-record"></p>
+                    </div>
+                    <button id="memory-btn-rigioca" class="btn-auth">Gioca ancora</button>
+                    <button id="memory-btn-fine-classifica" class="btn-auth btn-auth-secondary">Classifica</button>
+                    <div id="memory-classifica-fine" class="memory-classifica-container"></div>
+                </div>
+
+                <!-- Schermata classifica completa -->
+                <div id="memory-classifica" class="auth-form memory-form hidden">
+                    <h2>Classifica</h2>
+                    <div id="memory-classifica-completa" class="memory-classifica-container"></div>
+                    <button id="memory-btn-torna" class="btn-auth btn-auth-secondary">Indietro</button>
+                </div>
+            </div>
+        </div>
+
         <div class="install-banner hidden" id="install-banner">
             <span>Installa l'app sul tuo dispositivo</span>
             <button id="install-btn" class="btn-install">Installa</button>
@@ -331,6 +381,7 @@
     <script src="./js/api.js"></script>
     <script src="./js/sync-queue.js"></script>
     <script src="./js/messaging.js"></script>
+    <script src="./js/memory.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

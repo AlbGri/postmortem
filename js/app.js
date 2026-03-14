@@ -37,6 +37,8 @@ const App = (() => {
         _supabaseClient = supabase.createClient(SupabaseConfig.URL, SupabaseConfig.KEY);
         Auth.init(_supabaseClient);
         Api.init(_supabaseClient);
+        Memory.init(_supabaseClient);
+        Memory.agganciaEventi();
 
         _agganciaEventiAuth();
         registraServiceWorker();
@@ -105,6 +107,9 @@ const App = (() => {
         // Attiva messaggistica
         document.getElementById('msg-toggle').classList.remove('hidden');
         Messaging.init(_supabaseClient, profilo);
+
+        // Attiva pulsante Memory
+        document.getElementById('memory-toggle').classList.remove('hidden');
 
         // Ricarica il giorno corrente con i dati sincronizzati
         caricaGiorno(dataCorrente);
@@ -466,6 +471,7 @@ const App = (() => {
             SyncQueue.svuota();
             Messaging.destroy();
             document.getElementById('msg-toggle').classList.add('hidden');
+            document.getElementById('memory-toggle').classList.add('hidden');
         }
         _chiudiAuthModal();
         _mostraLogin();
@@ -742,6 +748,15 @@ const App = (() => {
                     hamburgerMenu.classList.add('hidden');
                     hamburgerBtn.setAttribute('aria-expanded', 'false');
                 }
+            });
+        }
+
+        const memoryBtn = document.getElementById('memory-toggle');
+        if (memoryBtn) {
+            memoryBtn.addEventListener('click', () => {
+                hamburgerMenu.classList.add('hidden');
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                Memory.apri();
             });
         }
 

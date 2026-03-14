@@ -1543,3 +1543,176 @@ footer {
     --error-color: #c0392b;
     --focus-outline-color: var(--secondary-color);
 }
+
+/* === MEMORY GAME === */
+
+.memory-overlay-content {
+    max-width: 500px;
+}
+
+.memory-form {
+    width: 100%;
+}
+
+.memory-desc {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.memory-menu-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.memory-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--card-background);
+    border-radius: 8px 8px 0 0;
+    box-shadow: var(--shadow);
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+.memory-griglia {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    padding: 0.5rem;
+    background: var(--card-background);
+    border-radius: 0 0 8px 8px;
+    box-shadow: var(--shadow);
+}
+
+.memory-carta {
+    aspect-ratio: 1;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    padding: 0;
+    font-family: inherit;
+    perspective: 600px;
+}
+
+.memory-carta-fronte,
+.memory-carta-retro {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    backface-visibility: hidden;
+    transition: transform 0.4s ease;
+}
+
+.memory-carta-fronte {
+    font-size: 1.6rem;
+    background: var(--surface-color);
+    transform: rotateY(180deg);
+}
+
+.memory-carta-retro {
+    background: var(--secondary-color);
+    transform: rotateY(0deg);
+}
+
+.memory-carta-retro::after {
+    content: '?';
+    color: var(--color-on-primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+    opacity: 0.6;
+}
+
+.memory-carta-scoperta .memory-carta-fronte {
+    transform: rotateY(0deg);
+}
+
+.memory-carta-scoperta .memory-carta-retro {
+    transform: rotateY(-180deg);
+}
+
+.memory-carta:focus-visible {
+    outline: 2px solid var(--focus-outline-color);
+    outline-offset: 2px;
+}
+
+.memory-risultati {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    line-height: 1.8;
+}
+
+.memory-risultati strong {
+    font-family: 'Courier New', monospace;
+}
+
+.memory-record {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.memory-classifica-container {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.memory-classifica-tabella {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.memory-classifica-tabella th {
+    text-align: left;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.memory-classifica-tabella td {
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.memory-classifica-tabella tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 600px) {
+    .memory-overlay-content {
+        max-width: 100%;
+        margin: 0.5rem;
+    }
+
+    .memory-griglia {
+        gap: 3px;
+        padding: 0.35rem;
+    }
+
+    .memory-carta-fronte {
+        font-size: 1.2rem;
+    }
+
+    .memory-carta-retro::after {
+        font-size: 0.9rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memory-carta-fronte,
+    .memory-carta-retro {
+        transition-duration: 0.01ms !important;
+    }
+}
