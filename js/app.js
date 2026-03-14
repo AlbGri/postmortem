@@ -214,13 +214,12 @@ const App = (() => {
             const msg = document.getElementById('sync-msg');
             msg.textContent = 'Hai ' + numGiorni + ' giorn' + (numGiorni === 1 ? 'o salvato' : 'i salvati') +
                 ' solo in locale (non present' + (numGiorni === 1 ? 'e' : 'i') + ' nel cloud).';
-            modal.classList.remove('hidden');
 
             function chiudi(scelta) {
-                modal.classList.add('hidden');
                 document.getElementById('btn-sync-carica').removeEventListener('click', onCarica);
                 document.getElementById('btn-sync-elimina').removeEventListener('click', onElimina);
                 document.getElementById('btn-sync-annulla').removeEventListener('click', onAnnulla);
+                ModalUtils.chiudi(modal);
                 resolve(scelta);
             }
             function onCarica() { chiudi('carica'); }
@@ -230,6 +229,11 @@ const App = (() => {
             document.getElementById('btn-sync-carica').addEventListener('click', onCarica);
             document.getElementById('btn-sync-elimina').addEventListener('click', onElimina);
             document.getElementById('btn-sync-annulla').addEventListener('click', onAnnulla);
+
+            ModalUtils.apri(modal, {
+                focusEl: document.getElementById('btn-sync-carica'),
+                onClose: onAnnulla
+            });
         });
     }
 
@@ -287,13 +291,11 @@ const App = (() => {
                 lista.appendChild(div);
             }
 
-            modal.classList.remove('hidden');
-
             function chiudi(scelta) {
-                modal.classList.add('hidden');
                 document.getElementById('btn-conflitti-locale').removeEventListener('click', onLocale);
                 document.getElementById('btn-conflitti-cloud').removeEventListener('click', onCloud);
                 document.getElementById('btn-conflitti-annulla').removeEventListener('click', onAnnulla);
+                ModalUtils.chiudi(modal);
                 resolve(scelta);
             }
             function onLocale() { chiudi('locale'); }
@@ -303,6 +305,11 @@ const App = (() => {
             document.getElementById('btn-conflitti-locale').addEventListener('click', onLocale);
             document.getElementById('btn-conflitti-cloud').addEventListener('click', onCloud);
             document.getElementById('btn-conflitti-annulla').addEventListener('click', onAnnulla);
+
+            ModalUtils.apri(modal, {
+                focusEl: document.getElementById('btn-conflitti-locale'),
+                onClose: onAnnulla
+            });
         });
     }
 
@@ -314,11 +321,17 @@ const App = (() => {
 
     function _apriAuthModal() {
         const modal = document.getElementById('schermata-auth');
-        modal.classList.remove('hidden');
         document.getElementById('form-login').classList.remove('hidden');
         document.getElementById('form-registrazione').classList.add('hidden');
         document.getElementById('schermata-attesa').classList.add('hidden');
+        modal.setAttribute('aria-labelledby', 'auth-titolo-login');
         _nascondiErrori();
+        ModalUtils.apri(modal, {
+            focusEl: document.getElementById('login-alias'),
+            onClose: () => {
+                if (!_isSchermataAttesaVisibile()) _chiudiAuthModal();
+            }
+        });
     }
 
     function _isSchermataAttesaVisibile() {
@@ -326,15 +339,18 @@ const App = (() => {
     }
 
     function _chiudiAuthModal() {
-        document.getElementById('schermata-auth').classList.add('hidden');
+        const modal = document.getElementById('schermata-auth');
         document.getElementById('btn-chiudi-auth').classList.remove('hidden');
+        ModalUtils.chiudi(modal);
     }
 
     function _mostraRegistrazione() {
         document.getElementById('form-login').classList.add('hidden');
         document.getElementById('form-registrazione').classList.remove('hidden');
         document.getElementById('schermata-attesa').classList.add('hidden');
+        document.getElementById('schermata-auth').setAttribute('aria-labelledby', 'auth-titolo-reg');
         _nascondiErrori();
+        document.getElementById('reg-nome').focus();
     }
 
     function _mostraAttesa() {
@@ -342,6 +358,7 @@ const App = (() => {
         document.getElementById('form-registrazione').classList.add('hidden');
         document.getElementById('schermata-attesa').classList.remove('hidden');
         document.getElementById('btn-chiudi-auth').classList.add('hidden');
+        document.getElementById('schermata-auth').setAttribute('aria-labelledby', 'auth-titolo-attesa');
     }
 
     function _mostraErrore(elementId, messaggio) {
@@ -369,14 +386,6 @@ const App = (() => {
         document.getElementById('auth-backdrop').addEventListener('click', () => {
             if (!_isSchermataAttesaVisibile()) _chiudiAuthModal();
         });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('schermata-auth');
-                if (!modal.classList.contains('hidden') && !_isSchermataAttesaVisibile()) {
-                    _chiudiAuthModal();
-                }
-            }
-        });
 
         // Toggle login <-> registrazione
         document.getElementById('link-registrati').addEventListener('click', (e) => {
@@ -387,7 +396,9 @@ const App = (() => {
             e.preventDefault();
             document.getElementById('form-login').classList.remove('hidden');
             document.getElementById('form-registrazione').classList.add('hidden');
+            document.getElementById('schermata-auth').setAttribute('aria-labelledby', 'auth-titolo-login');
             _nascondiErrori();
+            document.getElementById('login-alias').focus();
         });
 
         // Login

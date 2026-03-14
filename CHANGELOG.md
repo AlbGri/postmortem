@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.6.1] - 2026-03-14
+
+- Accessibilità modali WCAG 2.1 AA: focus trap, navigazione da tastiera, Escape per chiudere, ripristino focus
+- Attributi ARIA su tutte le modali (role="dialog", aria-modal, aria-labelledby)
+- Contenuto sottostante reso inerte quando una modale è aperta
+- Errori di login/registrazione annunciati dagli screen reader
+- Fix contrasto colori: weekend calendario, orario messaggi, footer, carte Memory
+- Fix allineamento icone nel menu hamburger
+
+---
+
 ## [2.6.0] - 2026-03-14
 
 - Gioco Memory 6x6 (18 coppie emoji fantasy) accessibile solo agli utenti autenticati

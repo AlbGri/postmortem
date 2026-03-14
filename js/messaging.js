@@ -139,7 +139,7 @@ const Messaging = (() => {
 
     async function _apriPannello() {
         const modal = document.getElementById('modal-messaggi');
-        modal.classList.remove('hidden');
+        ModalUtils.apri(modal, { onClose: _chiudiPannello });
 
         if (_isAdmin) {
             await _mostraListaUtenti();
@@ -149,7 +149,9 @@ const Messaging = (() => {
     }
 
     function _chiudiPannello() {
-        document.getElementById('modal-messaggi').classList.add('hidden');
+        const modal = document.getElementById('modal-messaggi');
+        if (modal.classList.contains('hidden')) return;
+        ModalUtils.chiudi(modal);
         _fermaPollingChat();
         _conversazioneAperta = null;
         aggiornaContatore();
@@ -619,15 +621,6 @@ const Messaging = (() => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 _inviaMessaggio();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('modal-messaggi');
-                if (!modal.classList.contains('hidden')) {
-                    _chiudiPannello();
-                }
             }
         });
     }

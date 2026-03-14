@@ -29,13 +29,18 @@ const Memory = (() => {
 
     function apri() {
         const modal = document.getElementById('modal-memory');
-        modal.classList.remove('hidden');
+        ModalUtils.apri(modal, {
+            focusEl: document.getElementById('memory-btn-gioca'),
+            onClose: chiudi
+        });
         _mostraSchermataInizio();
     }
 
     function chiudi() {
         _fermaTimer();
-        document.getElementById('modal-memory').classList.add('hidden');
+        const modal = document.getElementById('modal-memory');
+        if (modal.classList.contains('hidden')) return;
+        ModalUtils.chiudi(modal);
     }
 
     // === SCHERMATE ===

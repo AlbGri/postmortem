@@ -87,12 +87,12 @@
         </header>
 
         <!-- MODAL AUTH (overlay) -->
-        <div id="schermata-auth" class="auth-overlay hidden">
+        <div id="schermata-auth" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="auth-titolo-login">
             <div class="auth-overlay-backdrop" id="auth-backdrop"></div>
             <div class="auth-overlay-content">
                 <button class="auth-overlay-close" id="btn-chiudi-auth" aria-label="Chiudi">&times;</button>
             <div id="form-login" class="auth-form">
-                <h2>Accedi</h2>
+                <h2 id="auth-titolo-login">Accedi</h2>
                 <div class="form-group">
                     <label for="login-alias">Alias</label>
                     <input type="text" id="login-alias" class="input-auth" autocomplete="username">
@@ -103,11 +103,11 @@
                 </div>
                 <button id="btn-login" class="btn-auth">Accedi</button>
                 <p class="auth-link">Non hai un account? <a href="#" id="link-registrati">Registrati</a></p>
-                <p class="auth-errore hidden" id="login-errore"></p>
+                <p class="auth-errore hidden" id="login-errore" role="alert"></p>
             </div>
 
             <div id="form-registrazione" class="auth-form hidden">
-                <h2>Registrati</h2>
+                <h2 id="auth-titolo-reg">Registrati</h2>
                 <div class="form-group">
                     <label for="reg-nome">Nome</label>
                     <input type="text" id="reg-nome" class="input-auth" placeholder="Il tuo nome">
@@ -128,11 +128,11 @@
                 <p class="auth-privacy-note">La password è gestita da <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, un servizio esterno di autenticazione. Non è memorizzata né accessibile all'amministratore. Il progetto è open-source: puoi verificare come viene trattata la tua <a href="https://github.com/AlbGri/orari-ufficio/blob/main/js/auth.js" target="_blank" rel="noopener">password</a>, anche chiedendo alla tua AI preferita.</p>
                 <button id="btn-registra" class="btn-auth">Registrati</button>
                 <p class="auth-link">Hai già un account? <a href="#" id="link-login">Accedi</a></p>
-                <p class="auth-errore hidden" id="reg-errore"></p>
+                <p class="auth-errore hidden" id="reg-errore" role="alert"></p>
             </div>
 
             <div id="schermata-attesa" class="auth-form hidden">
-                <h2>Registrazione completata</h2>
+                <h2 id="auth-titolo-attesa">Registrazione completata</h2>
                 <p class="auth-attesa-msg">Il tuo account è in attesa di approvazione da parte di Alberto.</p>
                 <button id="btn-logout-attesa" class="btn-auth btn-auth-secondary">Esci</button>
             </div>
@@ -140,11 +140,11 @@
         </div>
 
         <!-- MODAL SYNC (scelta dati locali) -->
-        <div id="modal-sync" class="auth-overlay hidden">
+        <div id="modal-sync" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="sync-titolo">
             <div class="auth-overlay-backdrop"></div>
             <div class="auth-overlay-content">
                 <div class="auth-form">
-                    <h2>Dati locali trovati</h2>
+                    <h2 id="sync-titolo">Dati locali trovati</h2>
                     <p class="sync-msg" id="sync-msg"></p>
                     <div class="sync-actions">
                         <button id="btn-sync-carica" class="btn-auth">Carica nel cloud</button>
@@ -156,11 +156,11 @@
         </div>
 
         <!-- MODAL CONFLITTI SYNC (differenze campo per campo) -->
-        <div id="modal-conflitti" class="auth-overlay hidden">
+        <div id="modal-conflitti" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="conflitti-titolo">
             <div class="auth-overlay-backdrop"></div>
             <div class="auth-overlay-content">
                 <div class="auth-form">
-                    <h2>Dati diversi trovati</h2>
+                    <h2 id="conflitti-titolo">Dati diversi trovati</h2>
                     <p class="sync-msg" id="conflitti-msg"></p>
                     <div id="conflitti-lista" class="conflitti-lista"></div>
                     <div class="sync-actions">
@@ -173,13 +173,13 @@
         </div>
 
         <!-- MODAL MESSAGGI -->
-        <div id="modal-messaggi" class="auth-overlay hidden">
+        <div id="modal-messaggi" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="msg-titolo-lista">
             <div class="auth-overlay-backdrop" id="msg-backdrop"></div>
             <div class="auth-overlay-content msg-overlay-content">
                 <!-- Vista lista utenti (admin) / messaggio vuoto (utente) -->
                 <div id="msg-lista-view">
                     <div class="auth-form msg-form">
-                        <h2>Messaggi</h2>
+                        <h2 id="msg-titolo-lista">Messaggi</h2>
                         <div id="msg-attesa-area" class="hidden">
                             <h3 class="msg-section-title">Utenti in attesa</h3>
                             <div id="msg-lista-attesa" class="msg-lista-utenti"></div>
@@ -305,14 +305,14 @@
         </main><!-- /schermata-app -->
 
         <!-- MODAL MEMORY GAME -->
-        <div id="modal-memory" class="auth-overlay hidden">
+        <div id="modal-memory" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="memory-titolo-inizio">
             <div class="auth-overlay-backdrop" id="memory-backdrop"></div>
             <div class="auth-overlay-content memory-overlay-content">
                 <button class="auth-overlay-close" id="memory-btn-chiudi" aria-label="Chiudi">&times;</button>
 
                 <!-- Schermata inizio -->
                 <div id="memory-inizio" class="auth-form memory-form">
-                    <h2>Memory</h2>
+                    <h2 id="memory-titolo-inizio">Memory</h2>
                     <p class="memory-desc">Trova le 18 coppie di emoji fantasy!</p>
                     <button id="memory-btn-gioca" class="btn-auth">Gioca</button>
                     <button id="memory-btn-classifica" class="btn-auth btn-auth-secondary">Classifica</button>
@@ -351,12 +351,12 @@
         </div>
 
         <!-- MODAL CHANGELOG -->
-        <div id="schermata-changelog" class="auth-overlay hidden">
+        <div id="schermata-changelog" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="changelog-titolo">
             <div class="auth-overlay-backdrop" id="changelog-backdrop"></div>
             <div class="auth-overlay-content changelog-overlay-content">
                 <button class="auth-overlay-close" id="btn-chiudi-changelog" aria-label="Chiudi">&times;</button>
                 <div class="auth-form">
-                    <h2>Novità</h2>
+                    <h2 id="changelog-titolo">Novità</h2>
                     <div id="changelog-contenuto" class="changelog-body"></div>
                 </div>
             </div>
@@ -379,10 +379,11 @@
                 </span>
             </p>
             <p class="footer-disclaimer">App non ufficiale, non affiliata ad alcuna azienda.</p>
-            <p>Postmortem - PWA v2.6.0</p>
+            <p>Postmortem - PWA v2.6.1</p>
         </footer>
     </div>
 
+    <script src="./js/modal-utils.js"></script>
     <script src="./js/changelog.js"></script>
     <script src="./js/supabase.min.js"></script>
     <script src="./js/splash.js"></script>

@@ -1,8 +1,9 @@
-const CACHE_NAME = 'orari-ufficio-v22';
+const CACHE_NAME = 'orari-ufficio-v23';
 const urlsToCache = [
     './',
     './index.html',
     './css/style.css',
+    './js/modal-utils.js',
     './js/supabase.min.js',
     './js/supabase-config.js',
     './js/theme-switcher.js',

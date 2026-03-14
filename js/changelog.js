@@ -39,18 +39,19 @@
     }
 
     function apri() {
-        overlay.classList.remove('hidden');
+        ModalUtils.apri(overlay, {
+            focusEl: btnChiudi,
+            onClose: chiudi
+        });
         carica();
     }
 
     function chiudi() {
-        overlay.classList.add('hidden');
+        if (overlay.classList.contains('hidden')) return;
+        ModalUtils.chiudi(overlay);
     }
 
     btnApri.addEventListener('click', apri);
     btnChiudi.addEventListener('click', chiudi);
     backdrop.addEventListener('click', chiudi);
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) chiudi();
-    });
 })();
