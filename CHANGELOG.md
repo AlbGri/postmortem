@@ -2,90 +2,75 @@
 
 ## [2.6.1] - 2026-03-14
 
-- Accessibilità modali WCAG 2.1 AA: focus trap, navigazione da tastiera, Escape per chiudere, ripristino focus
-- Attributi ARIA su tutte le modali (role="dialog", aria-modal, aria-labelledby)
-- Contenuto sottostante reso inerte quando una modale è aperta
-- Errori di login/registrazione annunciati dagli screen reader
-- Fix contrasto colori: weekend calendario, orario messaggi, footer, carte Memory
+- Modali navigabili da tastiera e compatibili con screen reader
+- Fix contrasto colori in calendario, messaggi, footer e carte Memory
 - Fix allineamento icone nel menu hamburger
 
 ---
 
 ## [2.6.0] - 2026-03-14
 
-- Gioco Memory 6x6 (18 coppie emoji fantasy) accessibile solo agli utenti autenticati
-- Classifica top 10 globale per miglior tempo, con numero partite giocate
-- Record personale mostrato dopo ogni partita
+- Gioco Memory 6x6 con classifica globale e record personale
 - Nuova icona app: zombie chibi con clessidra
 
 ---
 
 ## [2.5.0] - 2026-03-14
 
-- Rebranding: "Orari Ufficio" rinominato in "Postmortem" (manifest, title, header, footer, notifiche)
-- Splash screen con icona e titolo su sfondo giallo, dissolvenza automatica dopo 1.5s
-- Font Montserrat per il titolo: "Post" bold + "mortem" regular
+- Rebranding: "Orari Ufficio" diventa "Postmortem"
+- Splash screen con dissolvenza automatica
 - Disclaimer nel footer: app non ufficiale
-- Sottotitolo "Gestione orari settimanali" sempre visibile (anche dopo login)
-- Service worker: aggiunti file mancanti alla cache (splash, sync-queue, font, icone)
 
 ---
 
 ## [2.4.0] - 2026-03-13
 
-- Coda operazioni offline: le scritture fallite vengono salvate e ritentate automaticamente
-- Sync login con confronto campo per campo: modale dettagliata per risolvere differenze tra dati locali e cloud
-- Protezione cancellazioni offline: i giorni cancellati senza rete non tornano dal cloud al login successivo
-- Indicatore visuale nell'header quando ci sono operazioni in attesa di sincronizzazione
+- Supporto offline: le operazioni fallite vengono salvate e ritentate automaticamente
+- Sync al login: modale per risolvere differenze tra dati locali e cloud
+- I giorni cancellati offline non ricompaiono dal cloud al login successivo
+- Indicatore visuale nell'header quando ci sono operazioni in coda
 
 ---
 
 ## [2.3.0] - 2026-03-12
 
-- Menu hamburger nell'header: theme toggle e geofencing toggle raggruppati in un dropdown
-- Icona messaggio ridisegnata in CSS puro per visibilità in dark mode
-- Fix: emoji icone con variation selector per rendering monocromatico cross-platform
+- Menu hamburger nell'header con tema e geofencing raggruppati
+- Fix visibilità icone in dark mode
 
 ## [2.2.0] - 2026-03-10
 
 - Messaggistica admin-utente con gestione conversazioni
-- Integrazione GitHub Pages con protezioni branch
-- Fix: filtro profilo per user ID per supportare policy admin
 
 ## [2.1.1] - 2026-02-25
 
-- Promemoria geofencing GPS: notifica entrata se nel raggio dell'ufficio tra le 08:00 e le 10:00 nei giorni feriali
+- Promemoria GPS: notifica entrata nel raggio dell'ufficio (08:00-10:00, giorni feriali)
 - Avviso visivo se la permanenza è sotto il minimo giornaliero
-- Nota trasparenza email sintetica nella form di registrazione
-- Fix: problemi cache e form non aggiornato su iOS
+- Fix cache e form non aggiornato su iOS
 
 ## [2.1.0] - 2026-02-21
 
-- Login opzionale con Supabase: backup cloud e sincronizzazione multi-dispositivo
-- Registrazione con alias (nessuna email richiesta), approvazione manuale admin
-- Sincronizzazione al login con modale per gestione conflitti tra dati locali e cloud
+- Login opzionale: backup cloud e sincronizzazione multi-dispositivo
+- Registrazione con alias, approvazione manuale admin
+- Modale per gestione conflitti tra dati locali e cloud al login
 - Pulsante "Adesso" per inserimento rapido ora corrente
-- Fix: se oggi è sabato o domenica, seleziona automaticamente il venerdì precedente
+- Fix: weekend seleziona automaticamente il venerdì precedente
 
 ## [2.0.0] - 2026-02-20
 
 - Navigazione per data con selettore, frecce e pulsante "Oggi"
-- Calendario mensile collassabile con delta giornaliero colorato per ogni cella
+- Calendario mensile collassabile con delta giornaliero colorato
 - Riepiloghi settimanale e mensile con delta cumulato e totale ore
 - Eliminazione dati con conferma per giorno, settimana e mese
-- Export/Import CSV (separatore `;`, UTF-8 BOM per Excel italiano)
-- Notifica promemoria uscita dopo 8h (6h il venerdì) dall'orario di entrata
-- Venerdì rilevato automaticamente dalla data (rimosso checkbox manuale)
-- Minimo settimanale calcolato dai giorni effettivamente compilati (non più valore fisso)
+- Export/Import CSV compatibile con Excel italiano
+- Notifica promemoria uscita dopo 8h (6h il venerdì)
+- Venerdì rilevato automaticamente dalla data
+- Minimo settimanale calcolato dai giorni effettivamente compilati
 - Migrazione automatica dal vecchio formato dati
 
 ## [1.0.0] - 2026-02-13
 
-- App statica PWA con 3 giorni fissi settimanali
-- Calcolo in tempo reale: delta giornaliero, delta cumulato, uscita prevista, uscita minima terzo giorno
-- Gestione pausa pranzo con calcolo eccesso (30 minuti inclusi nei giorni normali, nessun bonus il venerdì)
-- Persistenza dati LocalStorage
-- Funzionamento offline tramite Service Worker
+- Calcolo ore in tempo reale: delta giornaliero, cumulato, uscita prevista e minima
+- Gestione pausa pranzo (30 min inclusi nei giorni normali, esclusa il venerdì)
+- Funzionamento offline, installabile come PWA
 - Tema chiaro/scuro con rispetto della preferenza di sistema
-- Accessibilità WCAG 2.1 AA
-- Installabile come PWA
+- Persistenza dati in locale

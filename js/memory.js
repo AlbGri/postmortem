@@ -330,7 +330,7 @@ const Memory = (() => {
         document.getElementById('memory-btn-torna').addEventListener('click', _mostraSchermataInizio);
         document.getElementById('memory-btn-chiudi').addEventListener('click', chiudi);
 
-        document.getElementById('memory-backdrop').addEventListener('click', chiudi);
+        // Backdrop click disabilitato: chiusura solo tramite pulsante X
     }
 
     return { init, apri, chiudi, agganciaEventi };

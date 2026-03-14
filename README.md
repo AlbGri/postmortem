@@ -1,4 +1,4 @@
-# Orari Ufficio
+# Postmortem
 
 PWA per la gestione degli orari di ingresso e uscita nei giorni di ufficio.
 
@@ -44,6 +44,11 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 - **Promemoria geofencing** check GPS ogni 10 minuti tra le 08-10 nei giorni feriali, notifica se nel raggio dell'ufficio (richiede app/tab aperta)
 - **Login opzionale** con Supabase per backup cloud e sincronizzazione multi-dispositivo
 - **Registrazione con approvazione** manuale da parte dell'admin (no email richiesta)
+- **Coda operazioni offline** con sync automatica al ritorno della connessione
+- **Messaggistica** admin-utente con gestione conversazioni
+- **Gioco Memory** 6x6 con classifica globale e record personale (richiede login)
+- **Menu hamburger** con tema, geofencing e sezione Novità
+- **Splash screen** con dissolvenza automatica
 - Inserimento rapido dell'ora attuale (pulsante "Adesso")
 - Pausa pranzo collassabile
 - Funzionamento offline tramite Service Worker
@@ -73,6 +78,13 @@ orari-ufficio/
 │   ├── theme-switcher.js
 │   ├── auth.js
 │   ├── api.js
+│   ├── messaging.js
+│   ├── memory.js
+│   ├── modal-utils.js
+│   ├── changelog.js
+│   ├── splash.js
+│   ├── sync-queue.js
+│   ├── source-protection-silent.js
 │   ├── supabase-config.js
 │   └── supabase.min.js
 ├── sw.js
@@ -102,7 +114,7 @@ Per sincronizzare i dati tra dispositivi, cliccare "Accedi" e creare un account.
 
 L'app è composta solo da file statici. Può essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
 
-Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles` e `daily_entries`.
+Per il backend cloud è necessario un progetto Supabase con le tabelle `profiles`, `daily_entries` e `memory_scores`.
 
 ## Versioni
 
