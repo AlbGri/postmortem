@@ -62,7 +62,7 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 ## Struttura del progetto
 
 ```
-orari-ufficio/
+postmortem/
 ├── index.html
 ├── favicon.png
 ├── css/
