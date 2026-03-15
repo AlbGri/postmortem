@@ -235,7 +235,7 @@ const Geofencing = (() => {
         if (!navigator.serviceWorker) return;
 
         navigator.serviceWorker.ready.then(function (reg) {
-            reg.showNotification('Ora et Labora', {
+            reg.showNotification('Fugit', {
                 body: 'Sei in ufficio! Ricordati di inserire l\u2019orario di entrata.',
                 icon: './favicon.png'
             });

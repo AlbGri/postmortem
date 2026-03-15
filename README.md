@@ -1,4 +1,4 @@
-# Ora et Labora
+# Fugit
 
 PWA per la gestione degli orari di ingresso e uscita nei giorni di ufficio.
 
@@ -62,7 +62,7 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 ## Struttura del progetto
 
 ```
-ora-et-labora/
+fugit/
 ├── index.html
 ├── favicon.png
 ├── css/
@@ -110,7 +110,7 @@ Per sincronizzare i dati tra dispositivi, cliccare "Accedi" e creare un account.
 
 ## Deploy
 
-**Live**: [albgri.github.io/ora-et-labora](https://albgri.github.io/ora-et-labora/)
+**Live**: [albgri.github.io/fugit](https://albgri.github.io/fugit/)
 
 L'app è composta solo da file statici. Può essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
 

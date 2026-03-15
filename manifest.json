@@ -1,6 +1,6 @@
 {
-    "name": "Ora et Labora",
-    "short_name": "Ora et Labora",
+    "name": "Fugit",
+    "short_name": "Fugit",
     "description": "Gestione orari di ingresso e uscita per i giorni di ufficio",
     "start_url": "./",
     "display": "standalone",

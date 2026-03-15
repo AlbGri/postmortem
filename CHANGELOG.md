@@ -26,15 +26,12 @@
 ## [2.6.0] - 2026-03-14
 
 - Gioco Memory 6x6 con classifica globale e record personale
-- Nuova icona app: orologio solare
 
 ---
 
 ## [2.5.0] - 2026-03-14
 
-- Rebranding: nuovo nome "Ora et Labora"
 - Splash screen con dissolvenza automatica
-- Disclaimer nel footer: app non ufficiale
 
 ---
 
