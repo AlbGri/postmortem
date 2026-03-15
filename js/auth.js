@@ -35,16 +35,14 @@ const Auth = (() => {
      *
      * @param {string} alias - Nome visibile nell'app (unico)
      * @param {string} password - Minimo 6 caratteri
-     * @param {string} nome - Nome proprio
      * @param {string} motivazione - Campo libero, opzionale
      * @returns {{ ok: boolean, errore?: string }}
      */
-    async function registra(alias, password, nome, motivazione) {
+    async function registra(alias, password, motivazione) {
         alias = alias.trim();
-        nome = nome.trim();
 
-        if (!alias || !password || !nome) {
-            return { ok: false, errore: 'Alias, nome e password sono obbligatori.' };
+        if (!alias || !password) {
+            return { ok: false, errore: 'Alias e password sono obbligatori.' };
         }
 
         if (alias.length < 2) {
@@ -78,7 +76,6 @@ const Auth = (() => {
             .insert({
                 id: data.user.id,
                 alias: alias,
-                nome: nome,
                 motivazione: motivazione || null
             });
 

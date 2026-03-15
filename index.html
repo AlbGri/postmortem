@@ -33,14 +33,14 @@
     <meta name="description" content="Gestione orari di ufficio - Traccia ingresso e uscita per i giorni di ufficio">
 
     <!-- Open Graph per preview social (WhatsApp, Telegram, ecc.) -->
-    <meta property="og:title" content="Postmortem">
+    <meta property="og:title" content="Ora et Labora">
     <meta property="og:description" content="Traccia orari di ingresso e uscita dall'ufficio con calcolo automatico di ore lavorate">
-    <meta property="og:image" content="https://albgri.github.io/postmortem/icons/icon-512.png">
-    <meta property="og:url" content="https://albgri.github.io/postmortem/">
+    <meta property="og:image" content="https://albgri.github.io/ora-et-labora/icons/icon-512.png">
+    <meta property="og:url" content="https://albgri.github.io/ora-et-labora/">
     <meta property="og:type" content="website">
 
     <meta name="theme-color" content="#2c3e50">
-    <title>Postmortem</title>
+    <title>Ora et Labora</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="./css/style.css">
@@ -48,13 +48,13 @@
 </head>
 <body>
     <div id="splash-screen">
-        <img src="./icons/icon-512.png" alt="Postmortem" class="splash-icon">
-        <span class="splash-title"><span class="brand-bold">Post</span><span class="brand-light">mortem</span></span>
+        <img src="./icons/icon-512.png" alt="Ora et Labora" class="splash-icon">
+        <span class="splash-title"><span class="brand-bold">Ora</span> <span class="brand-light">et Labora</span></span>
         <span class="splash-subtitle">Gestione orari settimanali</span>
     </div>
     <div class="container">
         <header>
-            <h1><span class="brand-bold">Post</span><span class="brand-light">mortem</span></h1>
+            <h1><span class="brand-bold">Ora</span> <span class="brand-light">et Labora</span></h1>
             <p class="subtitle" id="app-subtitle">Gestione orari settimanali</p>
             <div class="header-auth-bar">
                 <div class="user-bar hidden" id="user-bar">
@@ -93,6 +93,10 @@
                         <span aria-hidden="true">&#x1F4CB;</span>
                         <span>Novità</span>
                     </button>
+                    <button type="button" class="hamburger-item" id="privacy-toggle" aria-label="Privacy">
+                        <span aria-hidden="true">&#x1F512;</span>
+                        <span>Privacy</span>
+                    </button>
                 </div>
             </div>
         </header>
@@ -120,10 +124,6 @@
             <div id="form-registrazione" class="auth-form hidden">
                 <h2 id="auth-titolo-reg">Registrati</h2>
                 <div class="form-group">
-                    <label for="reg-nome">Nome</label>
-                    <input type="text" id="reg-nome" class="input-auth" placeholder="Il tuo nome">
-                </div>
-                <div class="form-group">
                     <label for="reg-alias">Alias</label>
                     <input type="text" id="reg-alias" class="input-auth" autocomplete="username" placeholder="Nome visibile nell'app">
                 </div>
@@ -135,8 +135,8 @@
                     <label for="reg-motivazione">Lascia un commento <span class="label-opzionale">(opzionale)</span></label>
                     <input type="text" id="reg-motivazione" class="input-auth" placeholder="Non c'è motivo">
                 </div>
-                <p class="auth-privacy-note">Non chiedo email né cognome: la tua privacy è importante.</p>
-                <p class="auth-privacy-note">La password è gestita da <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, un servizio esterno di autenticazione. Non è memorizzata né accessibile all'amministratore. Il progetto è open-source: puoi verificare come viene trattata la tua <a href="https://github.com/AlbGri/postmortem/blob/main/js/auth.js" target="_blank" rel="noopener">password</a>, anche chiedendo alla tua AI preferita.</p>
+                <p class="auth-privacy-note">Non chiedo email, nome né cognome: la tua privacy è importante.</p>
+                <p class="auth-privacy-note">La password è gestita da <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, un servizio esterno di autenticazione. Non è memorizzata né accessibile all'amministratore. Il progetto è open-source: puoi verificare come viene trattata la tua <a href="https://github.com/AlbGri/ora-et-labora/blob/main/js/auth.js" target="_blank" rel="noopener">password</a>, anche chiedendo alla tua AI preferita.</p>
                 <button id="btn-registra" class="btn-auth">Registrati</button>
                 <p class="auth-link">Hai già un account? <a href="#" id="link-login">Accedi</a></p>
                 <p class="auth-errore hidden" id="reg-errore" role="alert"></p>
@@ -373,6 +373,33 @@
             </div>
         </div>
 
+        <!-- MODAL PRIVACY -->
+        <div id="schermata-privacy" class="auth-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="privacy-titolo">
+            <div class="auth-overlay-backdrop" id="privacy-backdrop"></div>
+            <div class="auth-overlay-content changelog-overlay-content">
+                <button class="auth-overlay-close" id="btn-chiudi-privacy" aria-label="Chiudi">&times;</button>
+                <div class="auth-form">
+                    <h2 id="privacy-titolo">Privacy</h2>
+                    <div class="privacy-body">
+                        <h3 class="privacy-section">Quali dati raccogliamo</h3>
+                        <p class="privacy-text">Se crei un account, vengono salvati: alias (scelto da te), orari di entrata e uscita, e i messaggi scambiati con l'amministratore. Non raccogliamo email, cognome né altri dati personali identificativi.</p>
+
+                        <h3 class="privacy-section">Dove sono conservati</h3>
+                        <p class="privacy-text">I dati sono memorizzati su <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, un servizio cloud con server in Europa. La password è gestita da Supabase e non è accessibile all'amministratore. Senza account, i dati restano solo sul tuo dispositivo.</p>
+
+                        <h3 class="privacy-section">Posizione GPS</h3>
+                        <p class="privacy-text">La funzione promemoria posizione è opzionale. Se attivata, la posizione di riferimento viene salvata solo sul tuo dispositivo e non viene mai inviata al server.</p>
+
+                        <h3 class="privacy-section">Cancellazione dati</h3>
+                        <p class="privacy-text">Per richiedere la cancellazione del tuo account e dei dati associati, chiedi direttamente all'amministratore.</p>
+
+                        <h3 class="privacy-section">Codice sorgente</h3>
+                        <p class="privacy-text">Il progetto è open-source. Puoi verificare come vengono trattati i tuoi dati nel <a href="https://github.com/AlbGri/ora-et-labora" target="_blank" rel="noopener">codice sorgente</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="auth-overlay hidden" id="install-overlay">
             <div class="auth-overlay-backdrop" id="install-backdrop"></div>
             <div class="auth-overlay-content">
@@ -389,14 +416,8 @@
                 <button id="btn-esporta-csv" class="btn-footer" aria-label="Esporta dati in CSV">Esporta CSV</button>
                 <button id="btn-importa-csv" class="btn-footer" aria-label="Importa dati da CSV">Importa CSV</button>
             </div>
-            <p class="footer-support">
-                Ti è utile? Offrimi un caffè!
-                <span class="footer-links">
-                    <a href="https://revolut.me/albert9u1r" target="_blank" rel="noopener">Revolut</a>
-                </span>
-            </p>
-            <p class="footer-disclaimer">App non ufficiale, non affiliata ad alcuna azienda.</p>
-            <p>Postmortem - PWA v2.6.2</p>
+            <p class="footer-disclaimer">Strumento personale per uso individuale. Non raccoglie dati per conto di terzi. Non sostituisce sistemi aziendali ufficiali.</p>
+            <p>Ora et Labora - PWA v2.7.0</p>
         </footer>
     </div>
 
@@ -417,6 +438,7 @@
     <script src="./js/sync-queue.js"></script>
     <script src="./js/messaging.js"></script>
     <script src="./js/memory.js"></script>
+    <script src="./js/privacy.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

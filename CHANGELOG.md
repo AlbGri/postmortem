@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.0] - 2026-03-15
+
+- Rimosso campo nome dalla registrazione per maggiore privacy
+- Modale Privacy accessibile dal menu hamburger
+- Geofencing: la posizione di riferimento viene salvata dall'utente al momento dell'attivazione
+
+---
+
 ## [2.6.2] - 2026-03-14
 
 - Bottone "Salva App" nell'header per aggiungere la PWA alla Home del telefono
@@ -24,7 +32,7 @@
 
 ## [2.5.0] - 2026-03-14
 
-- Rebranding: "Orari Ufficio" diventa "Postmortem"
+- Rebranding: nuovo nome "Ora et Labora"
 - Splash screen con dissolvenza automatica
 - Disclaimer nel footer: app non ufficiale
 

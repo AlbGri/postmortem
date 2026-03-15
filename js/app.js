@@ -350,7 +350,7 @@ const App = (() => {
         document.getElementById('schermata-attesa').classList.add('hidden');
         document.getElementById('schermata-auth').setAttribute('aria-labelledby', 'auth-titolo-reg');
         _nascondiErrori();
-        document.getElementById('reg-nome').focus();
+        document.getElementById('reg-alias').focus();
     }
 
     function _mostraAttesa() {
@@ -449,7 +449,6 @@ const App = (() => {
 
     async function _onRegistra() {
         _nascondiErrori();
-        const nome = document.getElementById('reg-nome').value;
         const alias = document.getElementById('reg-alias').value;
         const password = document.getElementById('reg-password').value;
         const motivazione = document.getElementById('reg-motivazione').value;
@@ -458,7 +457,7 @@ const App = (() => {
         btn.disabled = true;
         btn.textContent = 'Registrazione...';
 
-        const risultato = await Auth.registra(alias, password, nome, motivazione);
+        const risultato = await Auth.registra(alias, password, motivazione);
 
         btn.disabled = false;
         btn.textContent = 'Registrati';

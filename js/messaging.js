@@ -175,7 +175,7 @@ const Messaging = (() => {
 
         const { data: utenti, error } = await _supabase
             .from('profiles')
-            .select('id, alias, nome')
+            .select('id, alias')
             .eq('approved', true)
             .neq('id', _profilo.id)
             .order('alias');
@@ -235,7 +235,7 @@ const Messaging = (() => {
 
         const { data: inAttesa, error } = await _supabase
             .from('profiles')
-            .select('id, alias, nome, motivazione, created_at')
+            .select('id, alias, motivazione, created_at')
             .eq('approved', false)
             .order('created_at');
 
@@ -254,7 +254,7 @@ const Messaging = (() => {
             const info = document.createElement('div');
             info.className = 'msg-attesa-info';
             const data = new Date(utente.created_at).toLocaleDateString('it-IT');
-            info.innerHTML = '<strong>' + _escapeHtml(utente.alias) + '</strong> (' + _escapeHtml(utente.nome) + ')' +
+            info.innerHTML = '<strong>' + _escapeHtml(utente.alias) + '</strong>' +
                 '<br><small>' + data + (utente.motivazione ? ' - ' + _escapeHtml(utente.motivazione) : '') + '</small>';
 
             const azioni = document.createElement('div');

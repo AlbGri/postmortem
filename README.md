@@ -1,4 +1,4 @@
-# Postmortem
+# Ora et Labora
 
 PWA per la gestione degli orari di ingresso e uscita nei giorni di ufficio.
 
@@ -62,7 +62,7 @@ Calcolato dinamicamente dai giorni effettivamente compilati:
 ## Struttura del progetto
 
 ```
-postmortem/
+ora-et-labora/
 ├── index.html
 ├── favicon.png
 ├── css/
@@ -110,7 +110,7 @@ Per sincronizzare i dati tra dispositivi, cliccare "Accedi" e creare un account.
 
 ## Deploy
 
-**Live**: [albgri.github.io/postmortem](https://albgri.github.io/postmortem/)
+**Live**: [albgri.github.io/ora-et-labora](https://albgri.github.io/ora-et-labora/)
 
 L'app è composta solo da file statici. Può essere servita da qualsiasi web server (GitHub Pages, Codeberg Pages, Netlify, ecc.) oppure aperta direttamente dal file system.
 
@@ -135,12 +135,6 @@ Tag git di riferimento:
 - Geolocation API
 - Web App Manifest
 - Supabase (Auth + PostgreSQL + RLS)
-
-## Supportami
-
-Se trovi utile questo progetto, offrimi un caffè:
-
-- [Revolut](https://revolut.me/albert9u1r)
 
 ## Licenza
 

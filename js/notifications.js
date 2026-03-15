@@ -83,7 +83,7 @@ const Notifier = (() => {
         if (!('Notification' in window)) return;
         if (Notification.permission === 'granted' && navigator.serviceWorker) {
             navigator.serviceWorker.ready.then(function (reg) {
-                reg.showNotification('Postmortem', {
+                reg.showNotification('Ora et Labora', {
                     body: 'Ricordati di inserire l\'orario di uscita!',
                     icon: './favicon.png'
                 });

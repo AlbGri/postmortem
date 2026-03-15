@@ -1,20 +1,20 @@
 /**
  * Modulo per promemoria geofencing
  * Tra le 08:00 e le 10:00 dei giorni feriali, controlla la posizione GPS
- * ogni 10 minuti. Se l'utente e' nel raggio dell'ufficio e non ha ancora
- * compilato l'entrata di oggi, mostra una notifica (max 1 al giorno).
+ * ogni 10 minuti. Se l'utente è nel raggio della posizione salvata e non ha
+ * ancora compilato l'entrata di oggi, mostra una notifica (max 1 al giorno).
+ * La posizione di riferimento viene salvata dall'utente al momento dell'attivazione.
  */
 
 const Geofencing = (() => {
     const STORAGE_KEY = 'orari-ufficio-geofencing';
     const LAST_CHECK_KEY = 'orari-ufficio-geofencing-lastcheck';
     const NOTIFIED_KEY = 'orari-ufficio-geofencing-notified';
+    const OFFICE_LAT_KEY = 'orari-ufficio-geofencing-lat';
+    const OFFICE_LNG_KEY = 'orari-ufficio-geofencing-lng';
     const TIMEZONE = 'Europe/Rome';
 
-    const OFFICE_LAT = 41.8310084;
-    const OFFICE_LNG = 12.4677322;
     const RADIUS_METERS = 200;
-
     const CHECK_INTERVAL_MS = 10 * 60 * 1000;
     const HOUR_START = 8;
     const HOUR_END = 10;
@@ -46,6 +46,17 @@ const Geofencing = (() => {
         }
     }
 
+    function _getSavedPosition() {
+        try {
+            const lat = localStorage.getItem(OFFICE_LAT_KEY);
+            const lng = localStorage.getItem(OFFICE_LNG_KEY);
+            if (lat === null || lng === null) return null;
+            return { lat: parseFloat(lat), lng: parseFloat(lng) };
+        } catch (e) {
+            return null;
+        }
+    }
+
     function _requestAndEnable() {
         if (!('geolocation' in navigator)) {
             alert('Il tuo browser non supporta la geolocalizzazione.');
@@ -53,14 +64,16 @@ const Geofencing = (() => {
         }
 
         const conferma = confirm(
-            'Vuoi un promemoria tra le 8 e le 10 se entri nel raggio dell\'ufficio?'
+            'Sei in ufficio adesso? Vuoi salvare questa posizione come riferimento per le notifiche?\n\nRiceverai un promemoria tra le 8 e le 10 nei giorni feriali se non hai ancora inserito l\u2019entrata.'
         );
         if (!conferma) return;
 
         navigator.geolocation.getCurrentPosition(
-            function () {
+            function (pos) {
                 try {
                     localStorage.setItem(STORAGE_KEY, 'true');
+                    localStorage.setItem(OFFICE_LAT_KEY, String(pos.coords.latitude));
+                    localStorage.setItem(OFFICE_LNG_KEY, String(pos.coords.longitude));
                 } catch (e) { /* noop */ }
 
                 if ('Notification' in window && Notification.permission === 'default') {
@@ -71,7 +84,7 @@ const Geofencing = (() => {
                 _startMonitoring();
             },
             function () {
-                alert('Permesso geolocalizzazione negato. La funzione non puo\' essere attivata.');
+                alert('Permesso geolocalizzazione negato. La funzione non può essere attivata.');
             },
             { timeout: 10000 }
         );
@@ -82,6 +95,8 @@ const Geofencing = (() => {
             localStorage.removeItem(STORAGE_KEY);
             localStorage.removeItem(LAST_CHECK_KEY);
             localStorage.removeItem(NOTIFIED_KEY);
+            localStorage.removeItem(OFFICE_LAT_KEY);
+            localStorage.removeItem(OFFICE_LNG_KEY);
         } catch (e) { /* noop */ }
         _stopMonitoring();
         _updateButton(false);
@@ -102,6 +117,7 @@ const Geofencing = (() => {
 
     function _tick() {
         if (!_isEnabled()) return;
+        if (!_getSavedPosition()) return;
         if (!_isFeriale()) return;
         if (!_isInTimeWindow()) return;
         if (_isThrottled()) return;
@@ -177,12 +193,15 @@ const Geofencing = (() => {
     }
 
     function _checkPosition() {
+        const office = _getSavedPosition();
+        if (!office) return;
+
         navigator.geolocation.getCurrentPosition(
             function (pos) {
                 _saveLastCheck();
                 const dist = _haversine(
                     pos.coords.latitude, pos.coords.longitude,
-                    OFFICE_LAT, OFFICE_LNG
+                    office.lat, office.lng
                 );
                 if (dist <= RADIUS_METERS) {
                     _mostraNotifica();
@@ -216,8 +235,8 @@ const Geofencing = (() => {
         if (!navigator.serviceWorker) return;
 
         navigator.serviceWorker.ready.then(function (reg) {
-            reg.showNotification('Postmortem', {
-                body: 'Sei in ufficio! Ricordati di inserire l\'orario di entrata.',
+            reg.showNotification('Ora et Labora', {
+                body: 'Sei in ufficio! Ricordati di inserire l\u2019orario di entrata.',
                 icon: './favicon.png'
             });
         });

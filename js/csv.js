@@ -33,7 +33,7 @@ const CsvManager = (() => {
         const url = URL.createObjectURL(blob);
 
         const oggi = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Rome' }).format(new Date());
-        const nomeFile = 'postmortem-' + oggi + '.csv';
+        const nomeFile = 'ora-et-labora-' + oggi + '.csv';
 
         const a = document.createElement('a');
         a.href = url;
