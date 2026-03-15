@@ -26,7 +26,7 @@
 ## [2.6.0] - 2026-03-14
 
 - Gioco Memory 6x6 con classifica globale e record personale
-- Nuova icona app: zombie chibi con clessidra
+- Nuova icona app: orologio solare
 
 ---
 
